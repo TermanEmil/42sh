@@ -13,7 +13,7 @@
 #ifndef FT_KEY_CODES_H
 # define FT_KEY_CODES_H
 
-typedef char const			*t_term_key[16];
+typedef char				*t_term_key[16];
 
 /*
 ** Arrows
@@ -69,22 +69,22 @@ typedef char const			*t_term_key[16];
 
 // static const int a = 1;
 
-static t_term_key const		term_key_up = {"ku", FT_KEY_UP};
-static t_term_key const		term_key_down = {"kd", FT_KEY_DOWN};
-static t_term_key const		term_key_left = {"kl", FT_KEY_LEFT};
-static t_term_key const		term_key_right = {"kr", FT_KEY_RIGHT};
-static t_term_key const		term_key_ctrl_left = {FT_KEY_CTRL_LEFT};
-static t_term_key const		term_key_ctrl_right = {FT_KEY_CTRL_RIGHT};
-static t_term_key const		term_key_alt_up = {FT_KEY_ALT_UP};
-static t_term_key const		term_key_alt_down = {FT_KEY_ALT_DOWN};
-static t_term_key const		term_key_enter = {FT_KEY_NL, FT_KEY_CARRIAG_RET};
+static t_term_key			term_key_up = {"ku", FT_KEY_UP};
+static t_term_key			term_key_down = {"kd", FT_KEY_DOWN};
+static t_term_key			term_key_left = {"kl", FT_KEY_LEFT};
+static t_term_key			term_key_right = {"kr", FT_KEY_RIGHT};
+static t_term_key			term_key_ctrl_left = {FT_KEY_CTRL_LEFT};
+static t_term_key			term_key_ctrl_right = {FT_KEY_CTRL_RIGHT};
+static t_term_key			term_key_alt_up = {FT_KEY_ALT_UP};
+static t_term_key			term_key_alt_down = {FT_KEY_ALT_DOWN};
+static t_term_key			term_key_enter = {FT_KEY_NL, FT_KEY_CARRIAG_RET};
 
-static t_term_key const		term_key_next_pag = {"kN", "\xe[5~"};
-static t_term_key const		term_key_prev_pag = {"kP", "\xe[6~"};
-static t_term_key const		term_key_backspace = {"kb", FT_KEY_BACKSPACE};
-static t_term_key const		term_key_del = {"kD", FT_KEY_DEL};
-static t_term_key const		term_key_end = {"@7", FT_KEY_END1, FT_KEY_END2};
-static t_term_key const		term_key_home =
+static t_term_key			term_key_next_pag = {"kN", "\xe[5~"};
+static t_term_key			term_key_prev_pag = {"kP", "\xe[6~"};
+static t_term_key			term_key_backspace = {"kb", FT_KEY_BACKSPACE};
+static t_term_key			term_key_del = {"kD", FT_KEY_DEL};
+static t_term_key			term_key_end = {"@7", FT_KEY_END1, FT_KEY_END2};
+static t_term_key			term_key_home =
 								{"kh", "kH", FT_KEY_HOME1, FT_KEY_HOME2};
 
 #endif

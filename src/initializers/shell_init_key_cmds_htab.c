@@ -14,7 +14,7 @@ static void		add_key_cmd_term(t_hashtab * const htab, t_term_key const keys,
 					t_key_cmd_f * const f)
 {
 	int			i;
-	char		*key_str;
+	char const	*key_str;
 
 	for (i = 0; keys[i]; i++)
 	{

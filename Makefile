@@ -55,7 +55,7 @@ INCLUDES	=	$(INC_PROJ) $(LIB_INCS)
 # want to compile without flags
 
 # COMPILE		=	$(CC) $(FLAGS) $(INCLUDES)
-COMPILE		=	$(CC) $(INCLUDES) -Wincompatible-pointer-types-discards-qualifiers]
+COMPILE		=	$(CC) $(INCLUDES) -Wincompatible-pointer-types
 
 # Finds all '.c' files in 'src'
 
