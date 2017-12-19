@@ -8,3 +8,4 @@ t_termios	term_get_current_term_data(void)
 		ft_proj_err("couldn't read terminal data", 1);
 	return (term);
 }
+

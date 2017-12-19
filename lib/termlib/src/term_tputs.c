@@ -5,7 +5,7 @@
 ** It seems that tgetstr allocates memory in a static pointer, only once.
 */
 
-void	term_tputs(char const *attr_name, size_t const nlines, char *buf)
+void	term_tputs(char *attr_name, size_t const nlines, char *buf)
 {
 	char * const str_attr = tgetstr(attr_name, &buf);
 
@@ -19,7 +19,7 @@ void	term_tputs(char const *attr_name, size_t const nlines, char *buf)
 ** Doesn't throw any errors
 */
 
-void	term_try_tputs(char const *attr_name, size_t const nlines, char *buf)
+void	term_try_tputs(char *attr_name, size_t const nlines, char *buf)
 {
 	char * const str_attr = tgetstr(attr_name, &buf);
 

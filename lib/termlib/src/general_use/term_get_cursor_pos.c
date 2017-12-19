@@ -118,3 +118,4 @@ int			term_get_cursor_pos(int const tty, int * const row, int * const col)
 		*col = ft_atoi(ft_strchr(buf, ';') + 1) - 1;
 	return (0);
 }
+

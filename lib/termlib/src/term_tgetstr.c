@@ -1,6 +1,6 @@
 #include "termlib.h"
 
-char const	*term_tgetstr(char const * const attr)
+char const	*term_tgetstr(char* const attr)
 {
 	char	* buf;
 

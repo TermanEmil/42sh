@@ -9,3 +9,4 @@ int		std_htab_mem_cmp(void const *a, void const *b,
 		return (-1);
 	return (!(asize == bsize && ft_memcmp(a, b, asize) == 0));
 }
+

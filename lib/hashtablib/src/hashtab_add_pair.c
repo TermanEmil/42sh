@@ -20,3 +20,4 @@ int		hashtab_add_pair(t_hashtab * const htab, t_hashpair * const newpair)
 	htab->free_cells--;
 	return (0);
 }
+

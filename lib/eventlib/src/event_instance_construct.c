@@ -19,3 +19,4 @@ t_event_instance	event_inst_new(t_handler_f * const handler,
 {
 	return (event_instance_construct(handler, data));
 }
+

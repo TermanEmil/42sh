@@ -14,7 +14,7 @@ static void		add_key_cmd_term(t_hashtab * const htab, t_term_key const keys,
 					t_key_cmd_f * const f)
 {
 	int			i;
-	char const	*key_str;
+	char		*key_str;
 
 	for (i = 0; keys[i]; i++)
 	{
@@ -32,7 +32,7 @@ void			std_str_print_key(t_hashpair const *pair)
 {
 	if (pair)
 	{
-		ft_print_key((char const*)pair->key.mem);
+		ft_print_key((char*)pair->key.mem);
 		term_move_cursor_to_left_most();
 	}
 }

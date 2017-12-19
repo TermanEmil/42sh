@@ -6,7 +6,7 @@
 #    By: eterman <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/10/22 12:15:47 by eterman           #+#    #+#              #
-#    Updated: 2016/12/27 20:02:30 by eterman          ###   ########.fr        #
+#    Updated: 2017/12/19 18:40:49 by eterman          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,7 +55,7 @@ INCLUDES	=	$(INC_PROJ) $(LIB_INCS)
 # want to compile without flags
 
 # COMPILE		=	$(CC) $(FLAGS) $(INCLUDES)
-COMPILE		=	$(CC) $(INCLUDES)
+COMPILE		=	$(CC) $(INCLUDES) -Wincompatible-pointer-types-discards-qualifiers]
 
 # Finds all '.c' files in 'src'
 

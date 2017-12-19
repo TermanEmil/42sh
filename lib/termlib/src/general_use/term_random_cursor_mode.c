@@ -15,3 +15,4 @@ void				term_random_cursor_mode_off(void)
 {
 	term_tputs("te", term_get_height(), term_get_data()->tmp_buf);	
 }
+

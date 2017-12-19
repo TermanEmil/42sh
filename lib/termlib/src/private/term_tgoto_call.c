@@ -5,7 +5,7 @@
 ** A termcap function used to print capabilities with parameters.
 */
 
-void	term_tgoto_call(char const *attr, size_t const nlines,
+void	term_tgoto_call(char *attr, size_t const nlines,
 			int const x, int const y)
 {
 	char 			*buf;
@@ -24,3 +24,4 @@ void	term_tgoto_call(char const *attr, size_t const nlines,
 		ft_fatal("%s: doesn't support `tgoto()' functionality.", g_proj_name);
 	tputs(tgoto_str, nlines, &term_tputs_putchar);
 }
+

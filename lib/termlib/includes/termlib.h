@@ -153,11 +153,12 @@ void				term_end_underlining(void);
 */
 
 int					term_tputs_putchar(int c);
-void				term_tputs(char const *attr_name, size_t nlines, char *buf);
-void				term_try_tputs(char const *attr_name, size_t nlines,
+void				term_tputs(char *attr_name, size_t nlines, char *buf);
+void				term_try_tputs(char *attr_name, size_t nlines,
 						char *buf);
-void				term_tgoto_call(char const *attr, size_t nlines,
+void				term_tgoto_call(char *attr, size_t nlines,
 						int x, int y);
-char const			*term_tgetstr(char const *attr);
+char const			*term_tgetstr(char *attr);
 
 #endif
+

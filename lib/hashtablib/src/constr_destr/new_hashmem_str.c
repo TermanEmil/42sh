@@ -9,3 +9,4 @@ t_hashmem	new_hashmem_str_cp(char const *str)
 {
 	return (new_hashmem_str(ft_strdup(str)));
 }
+

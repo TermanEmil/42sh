@@ -6,7 +6,7 @@
 /*   By: eterman <terman.emil@gmail.com>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/29 17:57:27 by eterman           #+#    #+#             */
-/*   Updated: 2017/05/29 18:01:49 by eterman          ###   ########.fr       */
+/*   Updated: 2017/12/19 18:23:58 by eterman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int					char_is_utf8(unsigned char const * const key)
 {
 	size_t		required_len;
 	
+	required_len = 0;
 	if (key[0] >> 7 == 0)
 		required_len = 1;
 	else if (key[0] >> 5 == 0x6)

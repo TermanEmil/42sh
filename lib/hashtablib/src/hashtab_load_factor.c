@@ -6,3 +6,4 @@ float		hashtab_load_factor(t_hashtab const *hashtab)
 		return (1);
 	return ((hashtab->tablen - hashtab->free_cells) / ((float)hashtab->tablen));
 }
+

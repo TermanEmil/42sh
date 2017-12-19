@@ -24,3 +24,4 @@ t_hashpair	*htab_get_next_pair_iter(t_hashtab * const htab,
 		return (htab_get_next_pair_iter(htab, key, last_i, cmp_f));
 	return (pair);
 }
+

@@ -73,3 +73,4 @@ void				event_global_force_add(char *key, t_event_instance event);
 void				event_exit(int status);
 
 #endif
+

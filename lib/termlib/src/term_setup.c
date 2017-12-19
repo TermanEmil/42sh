@@ -37,3 +37,4 @@ void		term_setup(char const *termtype, t_term_data * const term_data)
 	// term_set_current_term_data(&term);
 	enable_raw_mode(term_data);
 }
+
