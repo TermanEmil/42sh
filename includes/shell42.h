@@ -13,7 +13,7 @@
 # include "hashtablib.h"
 # include "shlogic.h"
 
-# define DEFAULT_PROMPT "$>"
+# define DEFAULT_PROMPT "42sh$>"
 
 typedef struct s_shdata			t_shdata;
 

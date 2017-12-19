@@ -9,7 +9,7 @@ static void	input_history_pop_last_seq(t_input_history * const target)
 	}
 }
 
-void		input_history_add_seq(t_input_history * const target, 
+void		input_history_add_seq(t_input_history * const target,
 				t_shinput_seq const shinput_seq)
 {
 	t_list	*tmp;

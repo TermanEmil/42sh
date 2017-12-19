@@ -20,7 +20,7 @@ void	init_shell(void)
 
 	init_sh_events();
 	shell_init_key_cmds_htab();
-	
+
 	listen_to_signals();
 	ft_strcpy(g_shdata.prompt, DEFAULT_PROMPT);
 }

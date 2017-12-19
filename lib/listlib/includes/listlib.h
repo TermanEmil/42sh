@@ -55,8 +55,8 @@ void			ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 ** List extremeties adding
 */
 
-void			ft_lstadd(t_list **alst, t_list *new);
-void			ft_lst_push_front(t_list **first, t_list *new);
+void			ft_lstadd(t_list **alst, t_list *new_el);
+void			ft_lst_push_front(t_list **first, t_list *new_el);
 
 /*
 ** Get

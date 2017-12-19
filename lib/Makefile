@@ -40,7 +40,6 @@ LIB_DIRS	=								\
 				$(LIBROOT)/eventlib			\
 				$(LIBROOT)/hashtablib		\
 				$(LIBROOT)/termlib			\
-				$(LIBROOT)/unittestlib		\
 
 $(NAME):
 	$(foreach d, $(LIB_DIRS), make -C $d;)

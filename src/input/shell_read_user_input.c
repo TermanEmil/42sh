@@ -29,18 +29,18 @@ static inline void			uinput_insert_seq(t_shinput_seq seq)
 	if (seq.count <= 0)
 		return;
 
-	input_seq_insert_seq(g_current_in->input,g_current_in->cursor_pos, &seq);
+	input_seq_insert_seq(g_current_in->input, g_current_in->cursor_pos, &seq);
 
 	term_cursor_off();
-	
+
 	final_pos = g_current_in->cursor_pos + seq.count;
 	g_current_in->cursor_pos = final_pos - 1;
 
 	uinput_print_seq(seq.count);
 	input_reprint(g_current_in);
-	
+
 	g_current_in->cursor_pos = final_pos;
-	
+
 	term_cursor_on();
 }
 
@@ -91,7 +91,6 @@ static inline t_shinput_seq	uinput_mince_raw(char const *raw_in)
 		}
 		else
 			process_raw_as_normal_input(&raw_in, &seq);
-		
 	}
 	return (seq);
 }

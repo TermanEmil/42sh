@@ -63,7 +63,6 @@ LIB_ROOT	=	..
 LIBS		=								\
 				$(LIB_ROOT)/listlib/listlib.a		\
 				$(LIB_ROOT)/eventlib/eventlib.a		\
-				$(LIB_ROOT)/unittestlib/utestlib.a	\
 				$(LIB_ROOT)/hashtablib/hashtablib.a	\
 				-ltermcap
 
@@ -72,7 +71,6 @@ INC_PROJ	=	$(foreach d, $(INC_DIRS), -I $d)
 
 INCLUDES	=	$(INC_PROJ)					\
 				-I $(LIB_ROOT)/listlib/includes		\
-				-I $(LIB_ROOT)/unittestlib/includes	\
 				-I $(LIB_ROOT)/hashtablib/includes	\
 				-I $(LIB_ROOT)/eventlib/includes
 
@@ -80,6 +78,7 @@ INCLUDES	=	$(INC_PROJ)					\
 # want to compile without flags
 
 COMPILE		=	$(CC) $(INCLUDES) $(FLAGS)
+# COMPILE		=	$(CC) $(INCLUDES)
 
 # Finds all '.c' files in 'src'
 

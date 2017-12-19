@@ -40,13 +40,13 @@ LIBNAME		=	hashtablib.a
 FLAGS		=	-Wall -Wextra -Werror -pedantic
 CC			=	gcc
 
-LIBS		=	../libft/libft.a ../listlib/listlib.a ../unittestlib/utestlib.a
+LIBS		=	../libft/libft.a ../listlib/listlib.a
 
 INC_DIRS	=	$(shell find includes -type d)
 INC_PROJ	=	$(foreach d, $(INC_DIRS), -I $d)
 INC_FILES	=	$(shell find src -name '*.h')
 
-INCLUDES	=	$(INC_PROJ) -I ../libft/includes -I ../listlib/includes -I ../unittestlib/includes
+INCLUDES	=	$(INC_PROJ) -I ../libft/includes -I ../listlib/includes
 
 # Compile can include flags or other stuff, so it can be useful when I
 # want to compile without flags

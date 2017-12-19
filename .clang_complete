@@ -1,0 +1,7 @@
+-I./includes
+-I./lib/eventlib/includes
+-I./lib/hashtablib/includes
+-I./lib/termlib/includes
+-I./lib/listlib/includes
+
+-I./lib/libft/includes

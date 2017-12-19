@@ -42,7 +42,6 @@ CC			=	gcc
 
 LIBS		=	../libft/libft.a			\
 				../listlib/listlib.a		\
-				../unittestlib/utestlib.a	\
 				../hashtablib/hashtablib.a	\
 				-ltermcap
 
@@ -53,14 +52,13 @@ INC_FILES	=	$(shell find src -name '*.h')
 INCLUDES	=	$(INC_PROJ)					\
 				-I ../libft/includes		\
 				-I ../listlib/includes		\
-				-I ../unittestlib/includes	\
 				-I ../hashtablib/includes
 
 # Compile can include flags or other stuff, so it can be useful when I
 # want to compile without flags
 
-# COMPILE		=	$(CC) $(FLAGS) $(INCLUDES)
-COMPILE		=	$(CC) $(INCLUDES)
+COMPILE		=	$(CC) $(FLAGS) $(INCLUDES)
+# COMPILE		=	$(CC) $(INCLUDES)
 
 # Finds all '.c' files in 'src'
 

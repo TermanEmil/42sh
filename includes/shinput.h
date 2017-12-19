@@ -51,6 +51,8 @@ extern t_current_input			*g_current_in;
 **
 ** is_true_char - if the key is in quotes of backslashed, it won't suffer any
 ** further processing. Ex: '"' here, only the double quotes will be true char.
+** inside_of - 'abc', these keys will be, inside "'".
+** \a will be inside of "\", unless etc.
 */
 
 struct				s_sh_inkey
@@ -59,6 +61,7 @@ struct				s_sh_inkey
 	char			*meaning;
 	t_bool			is_true_char;
 	int				word_id;
+	char			inside_of;
 };
 
 /*

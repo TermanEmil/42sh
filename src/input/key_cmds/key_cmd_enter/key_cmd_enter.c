@@ -1,5 +1,7 @@
 #include "shell42.h"
 
+#define CHAR_CTRL_NB '&'
+
 void	print_lst_of_words(t_list *words)
 {
 	int		i;
@@ -40,6 +42,7 @@ t_lst_words	*sh_inkeys_process_shinkeys(t_lst_inkey *keys)
 	word_index = 0;
 	for (; keys; LTONEXT(keys))
 	{
+		// If the key is nothing. Add current word.
 		if (keys->content == NULL)
 		{
 			is_bslash = FALSE;
@@ -55,6 +58,7 @@ t_lst_words	*sh_inkeys_process_shinkeys(t_lst_inkey *keys)
 
 		// shinkey->word_id = word_index;
 
+		// If key is backslash, ignored if last 'bracket' is a "'".
 		if (ft_strequ(this_key, "\\") && !ft_strequ(last_bracket, "'"))
 		{
 			if (is_bslash)
@@ -148,6 +152,82 @@ void	ft_bidimens_print(t_str const *tab)
 	term_restore_cursor_pos();
 }
 
+static void remove_last_bracket(t_list *brakets)
+{
+	ft_lstpop_back(&brakets, &std_mem_del);
+}
+
+void	keys_assign_inside_of(t_lst_inkey *keys)
+{
+	t_list		*brakets;
+	char		last_bracket;
+	t_rostr		this_key;
+	t_sh_inkey	*this_sh_inkey;
+
+	brakets = ft_lstnew_str(".");
+	last_bracket = '\0';
+
+	for (int i = 0; keys; LTONEXT(keys), i++)
+	{
+		last_bracket = *LSTR(ft_lst_get_last(brakets));
+		this_sh_inkey = LCONT(keys, t_sh_inkey*);
+		this_key = sh_inkey_get_meaning(this_sh_inkey);
+
+		if (keys->content == NULL)
+			continue;
+		this_sh_inkey->inside_of = last_bracket;
+
+		if (last_bracket == '\\')
+		{
+			remove_last_bracket(brakets);
+			continue;
+		}
+
+		if (ft_strequ(this_key, "\\") && last_bracket != '\'')
+		{
+			ft_lstadd(&brakets, ft_lstnew_str(this_key));
+			this_sh_inkey->inside_of = CHAR_CTRL_NB;
+			continue;
+		}
+
+		if (ft_strstr("()[]{}`'\"", this_key) == NULL)
+			continue;
+
+		if (ft_strequ(this_key, "'"))
+		{
+			this_sh_inkey->inside_of = CHAR_CTRL_NB;
+			if (last_bracket == '\'')
+				remove_last_bracket(brakets);
+			else
+				ft_lstadd(&brakets, ft_lstnew_str(this_key));
+			continue;
+		}
+
+		if (ft_strchr("'\\", last_bracket))
+			continue;
+
+		this_sh_inkey->inside_of = CHAR_CTRL_NB;
+		if (this_key[0] == last_bracket)
+			remove_last_bracket(brakets);
+		else
+			ft_lstadd(&brakets, ft_lstnew_str(this_key));
+	}
+	ft_lstdel(&brakets, &std_mem_del);
+}
+
+t_str	get_keys_insideof(t_lst_inkey *keys)
+{
+	t_str	result;
+	int		i;
+
+	result = ft_strnew(ft_lstlen(keys));
+	term_printf(0, 5, "len: %d", ft_lstlen(keys));
+	for (i = 0; keys; LTONEXT(keys))
+		if (keys->content)
+			result[i++] = LCONT(keys, t_sh_inkey*)->inside_of;
+	return result;
+}
+
 int		key_cmd_enter(void)
 {
 	int				ret;
@@ -158,21 +238,28 @@ int		key_cmd_enter(void)
 	input_reprint(g_current_in);
 
 	do
-	{	
+	{
 		ret = key_cmd_enter_process_parenthesis();
 		if (ret != 0)
 			break;
 
 		keys = current_in_all_lines_to_lst(g_current_in, &g_shinput->history);
-		lst_of_words = sh_inkeys_process_shinkeys(keys);
-		
-		// print_lst_of_words(lst_of_words);
-		argv = lst_of_words_to_argv(lst_of_words);
-		ft_bidimens_print(argv);
+		keys_assign_inside_of(keys);
+		t_str insideof_map = get_keys_insideof(keys);
 
-		ft_free_bidimens(argv);
-		
-		lst_of_words_del(lst_of_words);
+		term_printf(0, 0, "%s", current_input_all_lines_to_str(g_current_in, ""));
+		term_printf(0, 1, "%s", insideof_map);
+
+		free(insideof_map);
+		// lst_of_words = sh_inkeys_process_shinkeys(keys);
+	
+		// print_lst_of_words(lst_of_words);
+		// argv = lst_of_words_to_argv(lst_of_words);
+		// ft_bidimens_print(argv);
+
+		// ft_free_bidimens(argv);
+
+		// lst_of_words_del(lst_of_words);
 		ft_lstdel(&keys, NULL);
 
 		g_current_in->line_index = 0;

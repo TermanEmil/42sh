@@ -20,7 +20,7 @@ static inline void	add_from_history(
 			ft_err_mem(1);
 
 		ft_lstadd(head, tmp);
-		ft_lstadd(head, ft_lstnew(NULL, 0));	
+		ft_lstadd(head, ft_lstnew(NULL, 0));
 	}
 }
 

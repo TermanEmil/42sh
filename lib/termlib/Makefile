@@ -46,7 +46,6 @@ LIB_DIRS	=								\
 				$(LIB_ROOT)/listlib			\
 				$(LIB_ROOT)/hashtablib		\
 				$(LIB_ROOT)/libft			\
-				$(LIB_ROOT)/unittestlib		\
 				$(LIB_ROOT)/eventlib		\
 
 LIBS		=	$(foreach d, $(LIB_DIRS), $d/*.a) -ltermcap
