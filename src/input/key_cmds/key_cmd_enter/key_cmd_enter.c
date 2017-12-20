@@ -74,7 +74,6 @@ t_lst_words	*extract_words_from_keys(t_lst_inkey const *keys)
 	t_rostr				key;
 	t_sh_inkey			*inkey;
 	static const char	*delims = " \t";
-	t_bool				is_new_word;
 
 	words = NULL;
 	word_buf = NULL;
@@ -85,7 +84,7 @@ t_lst_words	*extract_words_from_keys(t_lst_inkey const *keys)
 
 		if (inkey == NULL ||
 			(ft_strstr(delims, (key = sh_inkey_get_meaning(inkey))) &&
-			(ft_strchr("`'\"", inkey->inside_of) == NULL)))
+			(ft_strchr("'\"\\`", inkey->inside_of) == NULL)))
 		{
 			if (word_buf != NULL)
 				ft_lstadd(&words, ft_lstnew(&word_buf, sizeof(word_buf)));
@@ -139,6 +138,7 @@ void	ft_print_strings(t_str *strings)
 
 	if (strings == NULL)
 		return;
+
 	for (i = 0; strings[i]; i++)
 		term_printf(0, 2 + i, "%d) %s", i, strings[i]);
 }
@@ -161,7 +161,9 @@ int		key_cmd_enter(void)
 		words = extract_words_from_keys(keys);
 		argv = words_to_argv(words);
 		ft_print_strings(argv);
-
+		ft_free_bidimens(argv);
+		del_lst_of_words(words);
+		// ft_lstdel(&words, &std_lst_in_lst_mem_del);
 	}
 
 	input_mv_current_in_to_history(g_shinput);
