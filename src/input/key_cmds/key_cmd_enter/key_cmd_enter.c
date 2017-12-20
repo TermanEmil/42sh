@@ -157,7 +157,7 @@ static void remove_last_bracket(t_list *brakets)
 	ft_lstpop_back(&brakets, &std_mem_del);
 }
 
-void	keys_assign_inside_of(t_lst_inkey *keys)
+char	keys_assign_inside_of(t_lst_inkey *keys)
 {
 	t_list		*brakets;
 	char		last_bracket;
@@ -207,12 +207,36 @@ void	keys_assign_inside_of(t_lst_inkey *keys)
 			continue;
 
 		this_sh_inkey->inside_of = CHAR_CTRL_NB;
+
+		if (ft_strstr("()[]{}", this_key))
+		{
+			if (ft_strstr(")]}", this_key))
+			{
+				if (this_key[0] == ft_get_matching_parenthesis(last_bracket))
+					remove_last_bracket(brakets);
+				else
+				{
+					term_putnewl();
+					ft_error(FALSE, "%s: Syntax error, unexpected `%c'.",
+						g_proj_name, this_key[0]);
+					ft_lstdel(&brakets, &std_mem_del);
+					return -1;
+				}
+			}
+			else
+				ft_lstadd(&brakets, ft_lstnew_str(this_key));
+			continue;
+		}
+
 		if (this_key[0] == last_bracket)
 			remove_last_bracket(brakets);
 		else
 			ft_lstadd(&brakets, ft_lstnew_str(this_key));
 	}
+
+	last_bracket = *LSTR(ft_lst_get_last(brakets));
 	ft_lstdel(&brakets, &std_mem_del);
+	return (last_bracket == '.') ? 0 : last_bracket;
 }
 
 t_str	get_keys_insideof(t_lst_inkey *keys)
@@ -221,11 +245,19 @@ t_str	get_keys_insideof(t_lst_inkey *keys)
 	int		i;
 
 	result = ft_strnew(ft_lstlen(keys));
-	term_printf(0, 5, "len: %d", ft_lstlen(keys));
 	for (i = 0; keys; LTONEXT(keys))
 		if (keys->content)
 			result[i++] = LCONT(keys, t_sh_inkey*)->inside_of;
 	return result;
+}
+
+static inline void	set_parenthesis_prompt(t_str buf, char parenthesis)
+{
+	buf[0] = 0;
+	if (parenthesis != '\\')
+		ft_strcat(buf, ft_char_to_str(parenthesis));
+
+	ft_strcat(buf, ">");
 }
 
 int		key_cmd_enter(void)
@@ -237,33 +269,44 @@ int		key_cmd_enter(void)
 
 	input_reprint(g_current_in);
 
-	do
+	keys = current_in_all_lines_to_lst(g_current_in, &g_shinput->history);
+	ret = keys_assign_inside_of(keys);
+	t_str insideof_map = get_keys_insideof(keys);
+	t_str input_txt = current_input_all_lines_to_str(g_current_in, "");
+	term_printf(0, 0, "%s", input_txt);
+	term_printf(0, 1, "%s", insideof_map);
+	free(insideof_map);
+	free(input_txt);
+	ft_lstdel(&keys, NULL);
+
+	if (ret > 0)
 	{
-		ret = key_cmd_enter_process_parenthesis();
-		if (ret != 0)
-			break;
-
-		keys = current_in_all_lines_to_lst(g_current_in, &g_shinput->history);
-		keys_assign_inside_of(keys);
-		t_str insideof_map = get_keys_insideof(keys);
-
-		term_printf(0, 0, "%s", current_input_all_lines_to_str(g_current_in, ""));
-		term_printf(0, 1, "%s", insideof_map);
-
-		free(insideof_map);
-		// lst_of_words = sh_inkeys_process_shinkeys(keys);
-	
-		// print_lst_of_words(lst_of_words);
-		// argv = lst_of_words_to_argv(lst_of_words);
-		// ft_bidimens_print(argv);
-
-		// ft_free_bidimens(argv);
-
-		// lst_of_words_del(lst_of_words);
-		ft_lstdel(&keys, NULL);
-
+		set_parenthesis_prompt(g_shdata.prompt, ret);
+		g_current_in->line_index++;
+		g_shinput->history.current_in_index = -1;
+	}
+	else if (ret == -1)
+	{
+		ft_strcpy(g_shdata.prompt, DEFAULT_PROMPT);
+		// if (g_shinput->history.tmp_current_in)
+		// {
+		// 	shinput_seq_destruct(g_shinput->history.tmp_current_in);
+		// 	g_shinput->history.tmp_current_in = NULL;
+		// }
 		g_current_in->line_index = 0;
-	} while (FALSE);
+		g_shinput->history.current_in_index = -1;
+	}
+	else
+	{
+		ft_strcpy(g_shdata.prompt, DEFAULT_PROMPT);	
+		if (g_shinput->history.tmp_current_in)
+		{
+			shinput_seq_destruct(g_shinput->history.tmp_current_in);
+			g_shinput->history.tmp_current_in = NULL;
+		}
+		g_shinput->history.current_in_index = -1;
+		g_current_in->line_index = 0;
+	}
 
 	input_mv_current_in_to_history(g_shinput);
 

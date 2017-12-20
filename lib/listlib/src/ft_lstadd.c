@@ -23,7 +23,7 @@ void	ft_lstadd(t_list **head, t_list *new)
 		*head = new;
 	else
 	{
-		if (LNEXT(*head) == NULL)
+		if (new != NULL && LNEXT(*head) == NULL)
 			new->prev = *head;
 		ft_lstadd(&(LNEXT(*head)), new);
 	}

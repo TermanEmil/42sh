@@ -1,4 +1,5 @@
 #include "shinput.h"
+#include "termlib.h"
 
 static inline void	add_from_history(
 						t_lst_inkey ** const head,
@@ -16,7 +17,7 @@ static inline void	add_from_history(
 	{
 		lst_seq = ft_lstget(history->inputs, i);
 		tmp = ft_lstcpy(LCONT(lst_seq, t_shinput_seq*)->keys);
-		if (tmp == NULL)
+		if (tmp == NULL && LCONT(lst_seq, t_shinput_seq*)->keys != NULL)
 			ft_err_mem(1);
 
 		ft_lstadd(head, tmp);
