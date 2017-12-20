@@ -1,7 +1,5 @@
 #include "shell42.h"
 
-static const char char_ctrl_nb = '&';
-
 static void remove_last_bracket(t_list *brakets)
 {
 	ft_lstpop_back(&brakets, &std_mem_del);
@@ -30,7 +28,7 @@ static inline t_bool	process_key_as_bslash(
 	if (ft_strequ(key, "\\") && last_bracket != '\'')
 	{
 		ft_lstadd(&brakets, ft_lstnew_str(key));
-		inkey->inside_of = char_ctrl_nb;
+		inkey->inside_of = CHAR_PARENTHESIS_LIM;
 		return TRUE;
 	}
 	return FALSE;
@@ -44,7 +42,7 @@ static inline t_bool	process_single_quote(
 {
 	if (ft_strequ(key, "'"))
 	{
-		inkey->inside_of = char_ctrl_nb;
+		inkey->inside_of = CHAR_PARENTHESIS_LIM;
 		if (last_bracket == '\'')
 			remove_last_bracket(brakets);
 		else
@@ -125,7 +123,7 @@ char					assign_what_are_insideof(t_lst_inkey *keys)
 		if (ft_strchr("'\\", last_bracket))
 			continue;
 
-		inkey->inside_of = char_ctrl_nb;
+		inkey->inside_of = CHAR_PARENTHESIS_LIM;
 
 		if ((ret = process_real_brackets(key, last_bracket, brakets)) == -1)
 		{

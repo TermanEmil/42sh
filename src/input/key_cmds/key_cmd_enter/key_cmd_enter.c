@@ -99,10 +99,17 @@ t_lst_words	*extract_words_from_keys(t_lst_inkey const *keys)
 	return words;
 }
 
-t_rostr	get_ptrkey_meaning(const void *key, size_t size)
+t_rostr	get_ptrkey_meaning(const void *key_mem, size_t size)
 {
+	t_sh_inkey	*key;
+
 	(void)size;
-	return sh_inkey_get_meaning(*((t_sh_inkey**)key));
+	key = *((t_sh_inkey**)key_mem);
+	if (key->inside_of == CHAR_PARENTHESIS_LIM && 
+		ft_strstr("'\"\\`", sh_inkey_get_meaning(key)) != NULL)
+		return "";
+	else
+		return sh_inkey_get_meaning(key);
 }
 
 t_str	*words_to_argv(t_lst_words *words)
@@ -163,7 +170,6 @@ int		key_cmd_enter(void)
 		ft_print_strings(argv);
 		ft_free_bidimens(argv);
 		del_lst_of_words(words);
-		// ft_lstdel(&words, &std_lst_in_lst_mem_del);
 	}
 
 	input_mv_current_in_to_history(g_shinput);

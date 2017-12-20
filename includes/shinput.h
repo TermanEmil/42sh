@@ -8,6 +8,15 @@
 # define SHELL_INPUT_DELIMS " _;\"'-{[()]}|`#"
 
 /*
+** The t_sh_inkey-s' inside_of value will be assigned this,
+** if they are demonte a limit of a parenthesis:
+** ab"cd"e	:in
+** ..&..&.	:inside_of
+*/
+
+# define CHAR_PARENTHESIS_LIM '&'
+
+/*
 ** There are some cases when you can input an escape character (\033). When
 ** you do that, the terminal outputs '^[' (2 characters). When you backspace
 ** it, the terminal removes the both characters. But the terminal still
