@@ -102,6 +102,10 @@ void			ft_lstiter_arg_ptr(t_list *lst,
 */
 
 void			ft_lstreverse(t_list **head);
+t_str			ft_lst_join(
+					t_list const *list,
+					t_rostr (*get_str)(const void*, size_t),
+					t_rostr delim);
 
 /*
 ** Sorting

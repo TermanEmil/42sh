@@ -11,7 +11,7 @@ typedef struct s_logic_vars	t_logic_vars;
 ** A list of list of t_sh_inkeys
 */
 
-typedef t_list				t_lst_words;
+typedef t_list		t_lst_words;
 
 struct				s_logic_vars
 {
