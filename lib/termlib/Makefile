@@ -37,11 +37,21 @@ EOC			=	'\033[0m'
 
 NAME		=	termlib.a
 LIBNAME		=	termlib.a
-FLAGS		=	-Wall -Wextra -Werror -pedantic
+
+GOOD_FLAGS	=	-Wfloat-equal		\
+				-Wundef				\
+				-Wshadow			\
+
+FLAGS		=	$(GOOD_FLAGS)		\
+				-Wall				\
+				-Wextra				\
+				-Werror				\
+				-pedantic			\
+				-Wunreachable-code	\
+
 CC			=	gcc
 
 LIB_ROOT	=	..
-
 LIB_DIRS	=								\
 				$(LIB_ROOT)/listlib			\
 				$(LIB_ROOT)/hashtablib		\
@@ -49,12 +59,14 @@ LIB_DIRS	=								\
 				$(LIB_ROOT)/eventlib		\
 
 LIBS		=	$(foreach d, $(LIB_DIRS), $d/*.a) -ltermcap
+LIB_INCS	=	$(foreach d, $(LIB_DIRS), -I $d/includes)
 
 INC_DIRS	=	$(shell find includes -type d)
 INC_PROJ	=	$(foreach d, $(INC_DIRS), -I $d)
 INC_FILES	=	$(shell find src -name '*.h')
 
-INCLUDES	=	$(INC_PROJ)	$(foreach d, $(LIB_DIRS), -I $d/includes)
+INCLUDES	=	$(INC_PROJ)	\
+				$(LIB_INCS)
 
 # Compile can include flags or other stuff, so it can be useful when I
 # want to compile without flags

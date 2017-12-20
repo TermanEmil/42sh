@@ -35,8 +35,17 @@ EOC			=	'\033[0m'
 
 
 NAME		=	libft.a
-FLAGS		=	-Wall -Wextra -Werror
 CC			=	gcc
+
+GOOD_FLAGS	=						\
+				-Wundef				\
+				-Wshadow			\
+
+FLAGS		=	$(GOOD_FLAGS)		\
+				-Wall				\
+				-Wextra				\
+				-Werror				\
+				-Wunreachable-code	\
 
 ASCII_NAME	=   " \
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n	\
@@ -59,20 +68,18 @@ ASCII_NAME	=   " \
 ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░\n"
 
 LIB_ROOT	=	..
+LIB_DIRS	=	$(LIB_ROOT)/listlib/		\
+				$(LIB_ROOT)/eventlib/		\
+				$(LIB_ROOT)/hashtablib/		\
 
-LIBS		=								\
-				$(LIB_ROOT)/listlib/listlib.a		\
-				$(LIB_ROOT)/eventlib/eventlib.a		\
-				$(LIB_ROOT)/hashtablib/hashtablib.a	\
-				-ltermcap
+LIBS		=	$(foreach d, $(LIB_DIRS), -L$d/*.a) -ltermcap -lstatic
+LIB_INCS	=	$(foreach d, $(LIB_DIRS), -I $d/includes)
 
 INC_DIRS	=	$(shell find includes -type d)
 INC_PROJ	=	$(foreach d, $(INC_DIRS), -I $d)
 
 INCLUDES	=	$(INC_PROJ)					\
-				-I $(LIB_ROOT)/listlib/includes		\
-				-I $(LIB_ROOT)/hashtablib/includes	\
-				-I $(LIB_ROOT)/eventlib/includes
+				$(LIB_INCS)
 
 # Compile can include flags or other stuff, so it can be useful when I
 # want to compile without flags
@@ -142,6 +149,7 @@ $(OBJDIR)/%.o: src/*/*/*/*/*/%.c
 
 
 $(NAME): $(OBJDIR) $(OBJS)
+	@echo "LIBS: " $(LIBS)
 	@ar rc $(NAME) $(OBJS)
 	@printf $(ASCII_NAME)
 	@echo -n $(YELLOW) ""

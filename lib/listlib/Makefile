@@ -35,19 +35,30 @@ EOC			=	'\033[0m'
 
 
 NAME		=	listlib.a
-FLAGS		=	-Wall -Wextra -Werror
 CC			=	gcc
 
-LIBFT_DIR	=	../libft/
+GOOD_FLAGS	=	-Wfloat-equal		\
+				-Wundef				\
+				-Wshadow			\
 
-LIBS		=	$(LIBFT_DIR)/libft.a
+FLAGS		=	$(GOOD_FLAGS)		\
+				-Wall				\
+				-Wextra				\
+				-Werror				\
+				-pedantic			\
+				-Wunreachable-code	\
+
+LIB_ROOT	=	..
+LIB_DIRS	=	$(LIB_ROOT)/libft/				\
+
+LIBS		=	$(foreach d, $(LIB_DIRS), -L$d/*.a) -ltermcap -lstatic
+LIB_INCS	=	$(foreach d, $(LIB_DIRS), -I $d/includes)
 
 INC_DIRS	=	$(shell find includes -type d)
 INC_PROJ	=	$(foreach d, $(INC_DIRS), -I $d)
 
-LIBFT_INC	=	-I $(LIBFT_DIR)/includes/
-
-INCLUDES	=	$(INC_PROJ) $(LIBFT_INC)
+INCLUDES	=	$(INC_PROJ)					\
+				$(LIB_INCS)
 
 # Compile can include flags or other stuff, so it can be useful when I
 # want to compile without flags

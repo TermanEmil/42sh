@@ -40,19 +40,20 @@ LIBNAME		=	eventlib.a
 FLAGS		=	-Wall -Wextra -Werror -pedantic
 CC			=	gcc
 
-LIBS		=	../libft/libft.a			\
-				../listlib/listlib.a		\
-				../hashtablib/hashtablib.a	\
-				-ltermcap
+LIB_ROOT	=	..
+LIB_DIRS	=	$(LIB_ROOT)/libft/			\
+				$(LIB_ROOT)/listlib/		\
+				$(LIB_ROOT)/hashtablib/		\
+
+LIBS		=	$(foreach d, $(LIB_DIRS), -L$d/*.a) -ltermcap -lstatic
+LIB_INCS	=	$(foreach d, $(LIB_DIRS), -I $d/includes)
 
 INC_DIRS	=	$(shell find includes -type d)
 INC_PROJ	=	$(foreach d, $(INC_DIRS), -I $d)
 INC_FILES	=	$(shell find src -name '*.h')
 
 INCLUDES	=	$(INC_PROJ)					\
-				-I ../libft/includes		\
-				-I ../listlib/includes		\
-				-I ../hashtablib/includes
+				$(LIB_INCS)
 
 # Compile can include flags or other stuff, so it can be useful when I
 # want to compile without flags
@@ -126,6 +127,7 @@ $(OBJDIR)/%.o: src/*/*/*/*/*/%.c
 #	'.o' file).
 
 $(NAME): $(OBJDIR) $(OBJS)
+	@echo "LIBS: " $(LIBS)
 	@ar rc $(NAME) $(OBJS)
 	@echo -n $(YELLOW) ""
 	ranlib $(NAME)
