@@ -1,3 +1,6 @@
 *.o
 42sh
 objs/
+
+.DS_Store
+._.DS_Store
