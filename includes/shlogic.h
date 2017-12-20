@@ -30,6 +30,8 @@ struct				s_shlogic
 ** lst of words
 */
 
+t_lst_words			*extract_words_from_keys(t_lst_inkey const *keys);
+t_str				*words_to_argv(t_lst_words *words);
 void				del_lst_of_words(t_lst_words *words);
 
 #endif

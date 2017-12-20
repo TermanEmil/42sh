@@ -1,5 +1,9 @@
 #include "shell42.h"
 
+/*
+** By parenthesis I mean: ()[]{}\`'"
+*/
+
 static void remove_last_bracket(t_list *brakets)
 {
 	ft_lstpop_back(&brakets, &std_mem_del);
