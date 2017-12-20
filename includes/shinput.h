@@ -153,7 +153,7 @@ int					key_cmd_alt_down(void);
 */
 
 int					key_cmd_enter(void);
-int					key_cmd_enter_process_parenthesis(void);
+char				assign_what_are_insideof(t_lst_inkey *keys);
 
 /*
 ** ** Other
@@ -260,7 +260,6 @@ void				current_in_resset(t_current_input *current_in,
 						t_bool destroy_seq);
 char				*current_input_all_lines_to_str(
 						t_current_input const *current_in, t_rostr delim);
-char				current_input_is_complete(t_current_input const *input);
 t_lst_inkey			*current_in_all_lines_to_lst(t_current_input *c_in,
 						t_input_history *history);
 
@@ -290,6 +289,7 @@ char const			*shell_read_user_input_key(void);
 */
 
 char				ft_str_shell_parenthesis_are_complete(t_rostr str);
+t_str				get_keys_insideof_map(t_lst_inkey *keys);
 
 /*
 ** Debuggers
