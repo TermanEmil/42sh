@@ -8,7 +8,7 @@
 char	*sh_inkey_get_meaning(t_sh_inkey const * const target)
 {
 	if (target == NULL)
-		return (NULL);
+		return ("");
 	else if (target->meaning)
 		return (target->meaning);
 	else

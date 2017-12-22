@@ -102,20 +102,27 @@ void			del_hashpair(t_hashpair **pair,
 t_hashtab		*new_hashtab(size_t tablen,
 					t_del_mem_f *kdel, t_del_mem_f *vdel);
 void			del_hashtab(t_hashtab **tab);
-ssize_t			get_key_index(t_hashtab const *htab, t_hashmem key,
-					int search_free_cell);
-t_hashpair		*get_hashpair(t_hashtab const *htab, t_hashmem key);
 int				hashtab_add_pair(t_hashtab *htab, t_hashpair *newpair);
 void			htab_iter(t_hashtab *htab, t_const_iter_f *f);
 void			htab_rehash(t_hashtab *htab, size_t size_to_add);
 float			hashtab_load_factor(t_hashtab const *hashtab);
 ssize_t			htab_remove_at(t_hashtab *hashtab, ssize_t index);
 ssize_t			htab_remove(t_hashtab *hashtab, t_hashmem key);
+ssize_t			htab_index_of(t_hashtab const *htab, t_hashpair const *pair);
+
+/*
+** Getters
+*/
+
+t_hashpair		*get_hashpair(t_hashtab const *htab, t_hashmem key);
+t_hashmem		htab_get_val(const t_hashtab *htab, t_hashmem hashmem_key);
+t_str			htab_get_strval(const t_hashtab *htab, t_hashmem hashmem_key);
+ssize_t			get_key_index(t_hashtab const *htab, t_hashmem key,
+					int search_free_cell);
 t_hashpair		*htab_get_next_pair(t_hashtab *htab, t_hashmem key,
 					ssize_t *last_i, ssize_t *start);
 t_hashpair		*htab_get_next_pair_iter(t_hashtab *htab, t_hashmem key,
 					ssize_t *last_i, t_cmp_f *cmp_f);
-ssize_t			htab_index_of(t_hashtab const *htab, t_hashpair const *pair);
 
 /*
 ** Hash functions

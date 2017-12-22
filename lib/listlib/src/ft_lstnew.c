@@ -14,22 +14,7 @@
 
 t_list	*ft_lstnew(void const *content, size_t const content_size)
 {
-	t_list	*result;
-
-	result = (t_list*)malloc(sizeof(t_list));
-	if (result == NULL)
-		return (NULL);
-	result->next = NULL;
-	result->prev = NULL;
-	if (content == NULL)
-	{
-		result->content = NULL;
-		result->content_size = 0;
-	}
-	else
-	{
-		result->content = ft_memdup(content, content_size);
-		result->content_size = content_size;
-	}
-	return (result);
+	return ft_lstnew_nocpy(
+		(content == NULL) ? NULL : ft_memdup(content, content_size),
+		content_size);
 }

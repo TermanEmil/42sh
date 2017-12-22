@@ -48,6 +48,7 @@ struct			s_list
 
 t_list			*ft_lstnew(void const *content, size_t content_size);
 t_list			*ft_lstnew_str(char const *str);
+t_list			*ft_lstnew_nocpy(void *content, size_t content_size);
 void			ft_lstdelone(t_list **alst, void (*del)(void*, size_t));
 void			ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 
@@ -106,6 +107,11 @@ t_str			ft_lst_join(
 					t_list const *list,
 					t_rostr (*get_str)(const void*, size_t),
 					t_rostr delim);
+t_str			ft_lst_njoin(
+					t_list const *list,
+					t_rostr (*get_str)(const void*, size_t),
+					t_rostr delim,
+					int n);
 
 /*
 ** Sorting

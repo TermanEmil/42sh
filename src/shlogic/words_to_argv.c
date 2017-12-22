@@ -2,10 +2,10 @@
 
 static inline t_rostr	get_ptrkey_meaning(const void *key_mem, size_t size)
 {
-	t_sh_inkey	*key;
+	const t_sh_inkey	*key;
 
 	(void)size;
-	key = *((t_sh_inkey**)key_mem);
+	key = ((t_sh_inkey*)key_mem);
 	if (key->inside_of == CHAR_PARENTHESIS_LIM && 
 		ft_strstr("'\"\\`", sh_inkey_get_meaning(key)) != NULL)
 		return "";
@@ -32,7 +32,7 @@ t_str					*words_to_argv(t_lst_words *words)
 	for (i = 0; words; LTONEXT(words), i++)
 	{
 		str_word = ft_lst_join(
-			*LCONT(words, t_lst_inkey**),
+			LCONT(words, t_lst_inkey*),
 			&get_ptrkey_meaning, NULL);
 
 		if (str_word == NULL)

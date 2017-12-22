@@ -61,15 +61,17 @@ static inline int	process_bracket_completion(int assign_what_are_insideof_ret)
 	return 1;
 }
 
-void	ft_print_strings(t_str *strings)
+void	shlogic_exec(t_lst_words *words)
 {
-	int		i;
+	//-	Process dollar values
+	//-	Process tilda value ~
 
-	if (strings == NULL)
-		return;
+	//- Divide in subcommands: ; | `` > >> < <<
 
-	for (i = 0; strings[i]; i++)
-		term_printf(0, 2 + i, "%d) %s", i, strings[i]);
+	//-	Find what command it is:
+	//		is it referring to a specific pointed program?
+	//		is it a built in cmd?
+	//		is it a program from PATH?
 }
 
 int		key_cmd_enter(void)
@@ -87,8 +89,9 @@ int		key_cmd_enter(void)
 		t_str		*argv;
 
 		words = extract_words_from_keys(keys);
+		process_dollar_values(words, &g_shdata.shvars);
 		argv = words_to_argv(words);
-		ft_print_strings(argv);
+		debug_print_strings(argv);
 		ft_free_bidimens(argv);
 		del_lst_of_words(words);
 	}

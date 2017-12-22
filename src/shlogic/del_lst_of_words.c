@@ -1,9 +1,8 @@
 #include "shlogic.h"
 
-static inline void	del_word_inside_lst(t_lst_inkey **keys)
+static inline void	del_word_inside_lst(t_lst_inkey *keys)
 {
-	ft_lstdel(keys, &std_mem_del);
-	free(keys);
+	ft_lstdel(&keys, (t_ldel_func*)&sh_inkey_destruct);
 }
 
 /*

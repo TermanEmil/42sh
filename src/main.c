@@ -2,27 +2,15 @@
 #include <fcntl.h>
 #include "ft_key_codes.h"
 #include <time.h>
+#include "shellvars.h"
 
 t_shdata		g_shdata;
 t_shinput		*g_shinput;
 t_current_input	*g_current_in;
 
-void	shlogic_exec(t_list *lst_of_words)
+int		main(int argc, const char **argv, const char **envp)
 {
-	//-	Process dollar values
-	//-	Process tilda value ~
-
-	//- Divide in subcommands: ; | `` > >> < <<
-
-	//-	Find what command it is:
-	//		is it referring to a specific pointed program?
-	//		is it a built in cmd?
-	//		is it a program from PATH?
-}
-
-int		main(void)
-{
-	init_shell();
+	init_shell(envp);
 
 	ft_putstr("42sh shell by eterman");
 	term_putnewl();

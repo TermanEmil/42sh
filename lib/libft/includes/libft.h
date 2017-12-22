@@ -225,8 +225,9 @@ char			*ft_bufitoa(long long n, char *buf);
 void			print_n_times(char *str, int n, int fd);
 void			ft_print_mem(void const *ptr, size_t size, int base);
 char const		*ft_char_to_str(char c);
-char			ft_get_matching_parenthesis(char const parenthesis);
+char			ft_get_matching_parenthesis(char parenthesis);
 void			ft_pass(void);
+int				ft_tab_len(const void **tab);
 
 /*
 ** Standard functions

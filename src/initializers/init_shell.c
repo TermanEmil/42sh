@@ -8,7 +8,7 @@ static inline void	init_global_links(void)
 	g_shinput = &g_shdata.input;
 }
 
-void	init_shell(void)
+void	init_shell(const char **envp)
 {
 	g_shdata = shdata_construct();
 
@@ -18,6 +18,7 @@ void	init_shell(void)
 	term_make_termcap_keys_work();
 	g_shdata.input.term_tty = term_get_current_tty();
 
+	g_shdata.shvars = shvars_construct(envp);
 	init_sh_events();
 	shell_init_key_cmds_htab();
 
