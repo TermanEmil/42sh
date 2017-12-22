@@ -37,11 +37,14 @@ void				del_lst_of_words(t_lst_words *words);
 
 void				process_dollar_values(
 						t_lst_words *words, const t_shvars *shvars);
+void				proceess_tilde(t_lst_words	*words,
+						const t_shvars *shvars);
 
 /*
 ** Utils
 */
 
 void				debug_print_strings(t_str *strings);
+t_str				extract_var_name_from_keys(const t_lst_inkey *keys);
 
 #endif

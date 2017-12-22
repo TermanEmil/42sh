@@ -89,7 +89,10 @@ int		key_cmd_enter(void)
 		t_str		*argv;
 
 		words = extract_words_from_keys(keys);
+		
 		process_dollar_values(words, &g_shdata.shvars);
+		proceess_tilde(words, &g_shdata.shvars);
+
 		argv = words_to_argv(words);
 		debug_print_strings(argv);
 		ft_free_bidimens(argv);

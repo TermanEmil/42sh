@@ -218,6 +218,7 @@ t_sh_inkey			*sh_inkey_cpy(t_sh_inkey const *target);
 t_str				lst_in_key_get_pure_str(
 						t_lst_inkey const *lst, t_rostr delim);
 t_lst_inkey			*get_sh_inkeys_from_str(t_rostr str);
+t_bool				is_valid_var_name_inkey(const t_sh_inkey *sh_inkey);
 
 /*
 ** t_shinput_seq
