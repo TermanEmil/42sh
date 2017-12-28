@@ -13,6 +13,11 @@ static inline t_rostr	get_ptrkey_meaning(const void *key_mem, size_t size)
 		return sh_inkey_get_meaning(key);
 }
 
+t_str					word_to_display_str(const t_lst_inkey *keys)
+{
+	return ft_lst_join((void*)keys, &get_ptrkey_meaning, NULL);
+}
+
 /*
 ** Make an array of strings from the given 'words'. The quotes are not excluded.
 */
@@ -31,10 +36,7 @@ t_str					*words_to_argv(t_lst_words *words)
 		ft_err_mem(1);
 	for (i = 0; words; LTONEXT(words), i++)
 	{
-		str_word = ft_lst_join(
-			LCONT(words, t_lst_inkey*),
-			&get_ptrkey_meaning, NULL);
-
+		str_word = word_to_display_str(LCONT(words, const t_lst_inkey*));
 		if (str_word == NULL)
 			ft_err_mem(1);
 

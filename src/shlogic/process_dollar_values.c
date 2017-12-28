@@ -11,7 +11,6 @@ static inline void			add_processed_value(
 								const t_shvars *shvars,
 								t_lst_inkey **processed_word)
 {
-	t_sh_inkey			buf_key;
 	t_str				dollar_key;
 	t_rostr				htab_val;
 	t_hashmem			hashmem_key;
@@ -29,8 +28,7 @@ static inline void			add_processed_value(
 
 	if (htab_val == NULL)
 	{
-		buf_key = sh_inkey_cpy_construct(LCONT(key, t_sh_inkey*));
-		ft_lstadd(processed_word, ft_lstnew(&buf_key, sizeof(buf_key)));
+		add_cpykey_to_list(processed_word, LCONT(key, t_sh_inkey*));
 		return;
 	}
 
@@ -48,7 +46,6 @@ static inline t_lst_inkey	*process_dollar_in_word(
 	const t_lst_inkey	*key;
 	const t_sh_inkey	*sh_inkey;
 	t_lst_inkey			*processed_word;
-	t_sh_inkey			buf_key;
 
 	processed_word = NULL;
 	for (key = word; key; LTONEXT(key))
@@ -63,10 +60,7 @@ static inline t_lst_inkey	*process_dollar_in_word(
 			add_processed_value(key, shvars, &processed_word);
 		}
 		else
-		{
-			buf_key = sh_inkey_cpy_construct(sh_inkey);
-			ft_lstadd(&processed_word, ft_lstnew(&buf_key, sizeof(buf_key)));
-		}
+			add_cpykey_to_list(&processed_word, sh_inkey);
 	return processed_word;
 }
 

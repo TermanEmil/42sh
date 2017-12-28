@@ -58,5 +58,12 @@ t_shdata			shdata_construct(void);
 
 void				shdata_destruct(t_shdata *target);
 
+/*
+** Utils
+*/
+
+t_lst_str			*ft_regex_matchall(t_rostr patern, t_rostr str,
+						int patern_flags, int str_flags, t_bool verbose);
+
 
 #endif

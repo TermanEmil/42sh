@@ -21,11 +21,13 @@
 # define L_IS_LAST(list_cell)		(LNEXT(list_cell) == NULL)
 
 typedef struct s_list	t_list;
+typedef t_list			t_lst_str;
 
 typedef void	(t_ldel_func)(void*, size_t);
 typedef void*	(t_lcpy_cont)(void*, size_t);
 typedef void	(t_liter_arg)(t_list*, int, va_list);
 typedef void	(t_liter_arg_void)(t_list*, void*);
+typedef t_bool	(t_lst_cont_cmp)(const void*, const void*, size_t, size_t);
 
 struct			s_list
 {
@@ -49,6 +51,7 @@ struct			s_list
 t_list			*ft_lstnew(void const *content, size_t content_size);
 t_list			*ft_lstnew_str(char const *str);
 t_list			*ft_lstnew_nocpy(void *content, size_t content_size);
+t_list			*ft_lstnew_str_nocpy(char *str);
 void			ft_lstdelone(t_list **alst, void (*del)(void*, size_t));
 void			ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 
@@ -125,6 +128,16 @@ void			ft_lst_merge_sort(t_list **head, int (*f)(void*, void*));
 */
 
 void			ft_lstprint_str(t_list const * elem);
+
+/*
+** std
+*/
+
+void			*std_mem_assign(void *mem, size_t size);
+t_bool			std_lst_cont_cmp(
+					const void *t1, const void *t2, size_t s1, size_t s2);
+t_bool			std_lst_cont_ptr_cmp(
+					const void *t1, const void *t2, size_t s1, size_t s2);
 
 #endif
 

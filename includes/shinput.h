@@ -187,6 +187,7 @@ void				shell_get_cursor_pos(int *x, int *y);
 
 t_sh_inkey			sh_inkey_construct(char *displayed_chars, char *meaning);
 t_sh_inkey			sh_inkey_cpy_construct(const t_sh_inkey *target);
+t_sh_inkey			*sh_inkey_cpy_construct_ptr(const t_sh_inkey *target);
 t_shinput_seq		shinput_seq_construct(void);
 t_shinput_seq		*shinput_seq_new(void);
 t_input_history		input_history_construct(void);
@@ -219,6 +220,8 @@ t_str				lst_in_key_get_pure_str(
 						t_lst_inkey const *lst, t_rostr delim);
 t_lst_inkey			*get_sh_inkeys_from_str(t_rostr str);
 t_bool				is_valid_var_name_inkey(const t_sh_inkey *sh_inkey);
+void				add_cpykey_to_list(t_lst_inkey **lst,
+						const t_sh_inkey *sh_inkey);
 
 /*
 ** t_shinput_seq

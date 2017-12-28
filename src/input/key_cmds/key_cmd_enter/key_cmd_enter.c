@@ -63,10 +63,10 @@ static inline int	process_bracket_completion(int assign_what_are_insideof_ret)
 
 void	shlogic_exec(t_lst_words *words)
 {
+	//- Divide in subcommands: ; | > >> < <<
+
 	//-	Process dollar values
 	//-	Process tilda value ~
-
-	//- Divide in subcommands: ; | `` > >> < <<
 
 	//-	Find what command it is:
 	//		is it referring to a specific pointed program?
@@ -86,9 +86,14 @@ int		key_cmd_enter(void)
 	if (process_bracket_completion(ret) == 0)
 	{
 		t_lst_words	*words;
+		t_lst_words	*tmp_words;
 		t_str		*argv;
 
 		words = extract_words_from_keys(keys);
+		
+		tmp_words = divide_by_redirections(words);
+		del_lst_of_words(words);
+		words = tmp_words;
 		
 		process_dollar_values(words, &g_shdata.shvars);
 		proceess_tilde(words, &g_shdata.shvars);

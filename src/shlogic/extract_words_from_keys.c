@@ -1,4 +1,4 @@
-#include "shlogic.h"
+ #include "shlogic.h"
 
 static inline t_sh_inkey	*cpy_inkey(const t_sh_inkey *target)
 {

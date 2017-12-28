@@ -26,3 +26,11 @@ t_sh_inkey	sh_inkey_cpy_construct(const t_sh_inkey *target)
 		result.meaning = ft_strdup(target->meaning);
 	return result;
 }
+
+t_sh_inkey	*sh_inkey_cpy_construct_ptr(const t_sh_inkey *target)
+{
+	t_sh_inkey	tmp;
+
+	tmp = sh_inkey_cpy_construct(target);
+	return ft_memdup(&tmp, sizeof(tmp));
+}

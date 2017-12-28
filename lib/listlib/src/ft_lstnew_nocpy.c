@@ -21,3 +21,8 @@ t_list	*ft_lstnew_nocpy(void *content, size_t content_size)
 	}
 	return (result);	
 }
+
+t_list	*ft_lstnew_str_nocpy(char *str)
+{
+	return ft_lstnew_nocpy(str, (str == NULL) ? 0 : ft_strlen(str));
+}
