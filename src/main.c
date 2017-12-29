@@ -4,6 +4,7 @@
 #include <time.h>
 #include "shellvars.h"
 #include <regex.h>
+#include <stdio.h>
 
 t_shdata		g_shdata;
 t_shinput		*g_shinput;

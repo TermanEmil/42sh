@@ -5,7 +5,7 @@
 # include "ft_errors.h"
 # include "hashtablib.h"
 
-# define SHELL_INPUT_DELIMS " _;\"'-{[()]}|`#"
+# define SHELL_INPUT_DELIMS " \t_;\"'-()[]{}|`#<>"
 
 /*
 ** The t_sh_inkey-s' inside_of value will be assigned this,
@@ -208,20 +208,21 @@ void				shinput_destruct(t_shinput *target);
 ** t_sh_inkey
 */
 
-char				*sh_inkey_get_meaning(t_sh_inkey const *target);
+t_str				sh_inkey_get_meaning(t_sh_inkey const *target);
 t_rostr				sh_inkey_get_pure_meaning(t_sh_inkey const *key);
-size_t				sh_inkey_get_symbols(t_sh_inkey const *key);
-t_sh_inkey			sh_inkey_get_from_raw(char const *raw);
-char const			*get_displayed_alternative(char const *str, size_t *len);
-t_bool				sh_inkey_is_delim(t_sh_inkey const *key);
-void				uinput_print_seq(size_t seq_len);
-t_sh_inkey			*sh_inkey_cpy(t_sh_inkey const *target);
+t_rostr				get_displayed_alternative(char const *str, size_t *len);
 t_str				lst_in_key_get_pure_str(
 						t_lst_inkey const *lst, t_rostr delim);
-t_lst_inkey			*get_sh_inkeys_from_str(t_rostr str);
+size_t				sh_inkey_get_symbols(t_sh_inkey const *key);
+t_sh_inkey			*sh_inkey_cpy(t_sh_inkey const *target);
+t_sh_inkey			sh_inkey_get_from_raw(char const *raw);
+t_bool				sh_inkey_is_delim(t_sh_inkey const *key);
 t_bool				is_valid_var_name_inkey(const t_sh_inkey *sh_inkey);
+void				uinput_print_seq(size_t seq_len);
 void				add_cpykey_to_list(t_lst_inkey **lst,
 						const t_sh_inkey *sh_inkey);
+t_lst_inkey			*get_shinkey_at_strlen(const t_lst_inkey *keys, int len);
+t_lst_inkey			*get_sh_inkeys_from_str(t_rostr str);
 
 /*
 ** t_shinput_seq

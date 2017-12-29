@@ -47,7 +47,7 @@ static t_bool		handle_basic_case(
 
 	if (LPREV(*current_key) == NULL || LPREV(*current_key)->content == NULL)
 	{
-		*current_key = ft_lst_roget(*current_key,
+		*current_key = ft_lstget(*current_key,
 			add_tilde_val_to_word(processed_word, *current_key, shvars));
 		return TRUE;
 	}
@@ -75,7 +75,7 @@ static t_bool		handle_second_case(
 	{
 		if (ft_strstr(" \t;|><:", sh_inkey_get_meaning(sh_inkey)))
 		{
-			*current_key = ft_lst_roget(*current_key,
+			*current_key = ft_lstget(*current_key,
 				add_tilde_val_to_word(processed_word, *current_key, shvars));
 			return TRUE;
 		}
@@ -85,7 +85,7 @@ static t_bool		handle_second_case(
 			sh_inkey = LCONT(LPREV(*current_key)->prev, t_sh_inkey*);
 			if (sh_inkey_is_valid_key_for_tilde_name(sh_inkey))
 			{
-				*current_key = ft_lst_roget(*current_key, add_tilde_val_to_word(
+				*current_key = ft_lstget(*current_key, add_tilde_val_to_word(
 					processed_word, *current_key, shvars));
 				return TRUE;
 			}

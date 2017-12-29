@@ -1,258 +1,209 @@
 #include "shlogic.h"
 #include <regex.h>
 
-#define __REGEX_FIRST_PART__ "\\(^\\|[ \t\n]\\+\\)"
-
 /*
-** It includes all kinds of
+** It includes all kinds of redirections or ';|'.
 */
 
-static const t_rostr	regex_redir_patern =
+static const t_rostr	g_regex_redir_patern =
 	"\\("
 	"[0-9]*[><]\\+\\|"
-	"[0-9]*[><]\\+\\&[0-9]*" "\\($\\|[ \t\n]\\+\\)" "\\|"
+	"[0-9]*[><]\\+\\&[0-9]*\\|"
 	"[0-9]*[><]\\+\\&-\\|"
 	";\\|"
 	"|\\)";
 
 /*
-** For len = 0, it will return the first key.
+** Process the case when a match has been found and it's not inside of any kind
+** of 'parenthesises': ()[]{}\`'" etc.
 */
 
-t_lst_inkey		*get_shinkey_at_strlen(t_lst_inkey *keys, int len)
+static void		_process_base_case(
+					t_lst_inkey	**result,
+					const t_lst_inkey *word_keys,
+					int match_i,
+					int len_of_match,
+					t_lst_inkey **word_buf)
 {
-	for (; keys; LTONEXT(keys))
-	{
-		if (len <= 0)
-			return keys;
-		len -= ft_strlen(sh_inkey_get_meaning(LCONT(keys, t_sh_inkey*)));
-	}
-	ft_proj_err("get_shinkey_at_len_index: invalid len", TRUE);
-	return NULL;
-}
-
-t_list		*ft_lst_cpy_range(
-				const t_list *head, int i1, int i2,
-				t_lcpy_cont *f_cpy_cont)
-{
-	t_list	*result;
-
-	if (i1 > i2 || i1 < 0 || i2 < 0)
-		return NULL;
-	while (i1 != 0 && head)
-	{
-		i1--;
-		i2--;
-		LTONEXT(head);
-	}
-	result = NULL;
-	while (head && i2 >= 0)
-	{
-		i2--;
-		ft_lstadd(&result, ft_lstnew_nocpy(
-			f_cpy_cont(head->content, head->content_size),
-			head->content_size));
-		LTONEXT(head);
-	}
-	return result;
-}
-
-int			ft_lst_indexof(
-				const t_list *lst,
-				const void *target,
-				size_t target_size,
-				t_lst_cont_cmp *cmp)
-{
-	int		i;
-
-	if (cmp == NULL)
-		cmp = (t_lst_cont_cmp*)&ft_memcmp;
-
-	i = 0;
-	while (lst)
-	{
-		if (cmp(target, lst->content, target_size, lst->content_size))
-			return i;
-		i++;
-		LTONEXT(lst);
-	}
-	return -1;
-}
-
-/*
-	t_lst_inkey	*lst_inkey;
-			t_lst_inkey	*tmp;
-			int			matching_len;
-			int			tmp_i;
-
-			tmp = get_shinkey_at_strlen(word_keys, pmatch.rm_so + index_dif);
-			
-			ft_printf("\nstr: i = %d|%d-%d '%s'\n",
-				i, pmatch.rm_so, pmatch.rm_eo,
-				sh_inkey_get_meaning(LCONT(tmp, t_sh_inkey*)));
-			term_getch();
-		
-			tmp_i = ft_lst_indexof(
-				word_keys, tmp->content, 0, &std_lst_cont_ptr_cmp);
-
-			matching_len = pmatch.rm_eo - pmatch.rm_so;
-			
-			if (ft_strchr("\"\'\\`()[]{}", LCONT(tmp, t_sh_inkey*)->inside_of))
-			{
-				i++;
-				continue;
-			}
-			if (tmp != word_keys)
-			{
-				ft_lstadd(&result,
-					ft_lstnew_nocpy(ft_lst_cpy_range(word_keys, 0,
-						pmatch.rm_so - 1,
-						(t_lcpy_cont*)&sh_inkey_cpy_construct_ptr),
-					sizeof(t_list*)));
-			}
-
-			ft_lstadd(&result,
-				ft_lstnew_nocpy(
-					ft_lst_cpy_range(word_keys, tmp_i, pmatch.rm_eo - 1,
-						(t_lcpy_cont*)&sh_inkey_cpy_construct_ptr),
-					sizeof(t_list*)));
-			word_keys = ft_lstget(word_keys, pmatch.rm_eo);
-			index_dif = 0;
-			// else
-				// index_dif = pmatch.rm_eo;
-			// word_keys = ft_lstget(word_keys, pmatch.rm_eo);	
-			i += ((pmatch.rm_eo == 0) ? 1 : (pmatch.rm_eo));
-*/
-
-t_lst_words	*divide_word_by_redirections(t_lst_inkey *word_keys)
-{
-	t_lst_words			*result;
-	t_str				word_str;
-
-	result = NULL;
-	word_str = word_to_str(word_keys);
-	if (word_str == NULL)
-		ft_err_mem(1);
-	
-	int			ret;
-	regex_t		regex_patern;
-	regmatch_t	pmatch;
-	int			i;
-	t_lst_inkey	*word_buf;
-
-	ret = regcomp(&regex_patern, regex_redir_patern, 0);
-	if (ret != 0)
-		ft_proj_err("Regex failed at divide_by_redirections (1)", 1);
-
-	word_buf = NULL;
-	i = 0;
-	while (word_str[i] && word_keys != NULL)
-	{
-		ret = regexec(&regex_patern, word_str + i, 1, &pmatch, 0);
-		if (ret == 0)
-		{
-			t_lst_inkey	*start_of_match;
-			int			index_of_first_matching_key;
-			t_sh_inkey	*start_of_match_key;
-			int			 len_of_matching;
-
-			start_of_match = get_shinkey_at_strlen(word_keys,
-				pmatch.rm_so);
-			index_of_first_matching_key = ft_lst_indexof(
-				word_keys, start_of_match->content, 0, &std_lst_cont_ptr_cmp);
-			start_of_match_key = LCONT(start_of_match, t_sh_inkey*);
-
-			len_of_matching	= pmatch.rm_eo - pmatch.rm_so;
-
-			if (!ft_strchr("\"\'\\`()[]{}", start_of_match_key->inside_of))
-			{
-				t_lst_inkey	*to_add;
-
-				to_add = NULL;
-				if (word_buf != NULL)
-				{
-					to_add = word_buf;
-					word_buf = NULL;
-				}
-				
-				if (start_of_match != word_keys)
-				{
-					ft_lstadd(&to_add, ft_lst_cpy_range(word_keys, 0,
-						index_of_first_matching_key - 1,
-						(t_lcpy_cont*)&std_mem_assign));
-				}
-
-				if (to_add)
-					ft_lstadd(&result,
-						ft_lstnew_nocpy(to_add, sizeof(to_add)));
-
-				ft_lstadd(&result,
-					ft_lstnew_nocpy(
-						ft_lst_cpy_range(word_keys,
-							index_of_first_matching_key,
-							index_of_first_matching_key + len_of_matching - 1,
-							(t_lcpy_cont*)&std_mem_assign),
-						sizeof(t_list*)));
-			}
-			else
-			{
-				ft_lstadd(&word_buf,
-					ft_lst_cpy_range(word_keys, 0,
-						index_of_first_matching_key + len_of_matching - 1,
-						(t_lcpy_cont*)&std_mem_assign));
-			}
-
-			i += ((pmatch.rm_eo == 0) ? 1 : (pmatch.rm_eo));
-			word_keys = ft_lstget(word_keys,
-				index_of_first_matching_key + len_of_matching);
-		}
-		else if (ret == REG_NOMATCH)
-			break;
-		else
-			ft_proj_err("Regex failed at divide_by_redirections (2)", 1);
-	}
-
-	free(word_str);
-	regfree(&regex_patern);
-
 	t_lst_inkey	*to_add;
 
 	to_add = NULL;
 	if (word_buf != NULL)
 	{
-		to_add = word_buf;
+		to_add = *word_buf;
+		*word_buf = NULL;
+	}
+	
+	if (match_i != 0)
+	{
+		ft_lstadd(&to_add, ft_lst_cpy_range(word_keys, 0,
+			match_i - 1,
+			(t_lcpy_cont*)&std_mem_assign));
+	}
+
+	if (to_add)
+	{
+		ft_lstadd(result,
+			ft_lstnew_nocpy(to_add, sizeof(to_add)));
+	}
+
+	ft_lstadd(result, ft_lstnew_nocpy(ft_lst_cpy_range(word_keys, match_i,
+			match_i + len_of_match - 1, (t_lcpy_cont*)&std_mem_assign),
+		sizeof(t_list*)));
+}
+
+/*
+** If the match isn't inside of anything that cancel it's propreties, then it's
+** processed as a base case, otherwise add to word_buff all keys until the end
+** of the match.
+** After that, more the word_keys pointer to the end of the match and return the
+** end of the match in bytes (for str).
+**
+** Warning: keep in mind that there may be unicode!
+*/
+
+static int		_process_regex_match(
+					t_lst_inkey **result,
+					t_lst_inkey **word_keys,
+					t_lst_inkey **word_buf,
+					regmatch_t pmatch)
+{
+	t_lst_inkey	*match;
+	int			match_i;
+	int			len_of_match;
+
+	match = get_shinkey_at_strlen(*word_keys, pmatch.rm_so);
+	match_i = ft_lst_indexof(
+		*word_keys, match->content, 0, &std_lst_cont_ptr_cmp);
+	len_of_match = pmatch.rm_eo - pmatch.rm_so;
+
+	if (!ft_strchr("\"\'\\`()[]{}", LCONT(match, t_sh_inkey*)->inside_of))
+		_process_base_case(result, *word_keys, match_i, len_of_match, word_buf);
+	else
+	{
+		ft_lstadd(word_buf, ft_lst_cpy_range(*word_keys, 0,
+			match_i + len_of_match - 1, (t_lcpy_cont*)&std_mem_assign));
+	}
+
+	*word_keys = ft_lstget(*word_keys, match_i + len_of_match);
+	return (pmatch.rm_eo == 0) ? 1 : pmatch.rm_eo;
+}
+
+/*
+** To find all redirections or pipes or ';', regex is used.
+** While it's not end of string or end or word_keys, try to find a regex match.
+*/
+
+static void		_add_words_at_each_regex_match(
+					t_lst_inkey **result,
+					t_lst_inkey **word_keys,
+					t_lst_inkey **word_buf,
+					t_rostr word_str)
+{
+	int			ret;
+	int			i;
+	regex_t		regex_patern;
+	regmatch_t	pmatch;
+
+	ret = regcomp(&regex_patern, g_regex_redir_patern, 0);
+	if (ret != 0)
+		ft_proj_err("Regex failed at divide_by_redirections (1)", 1);
+
+	i = 0;
+	while (word_str[i] && word_keys != NULL)
+	{
+		ret = regexec(&regex_patern, word_str + i, 1, &pmatch, 0);
+		if (ret == 0)
+			i += _process_regex_match(result, word_keys, word_buf, pmatch);
+		else if (ret == REG_NOMATCH)
+			break;
+		else
+			ft_proj_err("Regex failed at divide_by_redirections (2)", 1);
+	}
+	regfree(&regex_patern);
+}
+
+/*
+** Add the remaining keys as a word. If the initial word had no redirections,
+** or no pipies or ';', then the whole word will pe added here.
+*/
+
+static void		_add_reaming_keys(
+					t_lst_inkey **result,
+					const t_lst_inkey *word_keys,
+					t_lst_inkey **word_buf)
+{
+	t_lst_inkey	*to_add;
+
+	to_add = NULL;
+	if (word_buf != NULL)
+	{
+		to_add = *word_buf;
 		word_buf = NULL;
 	}
 
 	if (word_keys != NULL)
-	{
-		t_lst_inkey	*cpy = ft_lst_full_cpy(
+		ft_lstadd(&to_add, ft_lst_full_cpy(
 			word_keys,
 			(t_lcpy_cont*)&std_mem_assign,
-			(t_ldel_func*)&sh_inkey_destruct);
-		ft_lstadd(&to_add, cpy);
-	}
+			(t_ldel_func*)&sh_inkey_destruct));
 
 	if (to_add)
-		ft_lstadd(&result, ft_lstnew_nocpy(to_add, sizeof(to_add)));
+		ft_lstadd(result, ft_lstnew_nocpy(to_add, sizeof(to_add)));
+}
 
+/*
+** Divide the given word (list of keys) by redirections. The given word_keys
+** can be freed (only the list structure, not the contents, that is, not the
+** t_sh_inkey*-s).
+** word_buf is used in case a match was found, but the key is inside of any kind
+** of 'parenthesises': ()[]{}\`'" etc. In that case, the keys until the end of
+** the match are added to this buffer. If another match has been found, then
+** this buf is added to the 'prematch word' and is given NULL value.
+*/
+
+t_lst_words		*_divide_word_by_redirections(t_lst_inkey *word_keys)
+{
+	t_lst_words		*result;
+	t_lst_inkey		*word_buf;
+	t_str			word_str;
+
+	word_str = word_to_str(word_keys);
+	if (word_str == NULL)
+		ft_err_mem(1);
+
+	word_buf = NULL;
+	result = NULL;
+	_add_words_at_each_regex_match(&result, &word_keys, &word_buf, word_str);
+	free(word_str);
+	_add_reaming_keys(&result, word_keys, &word_buf);
 	return result;
 }
 
-t_lst_words	*divide_by_redirections(const t_lst_words *words)
+/*
+** Divide the given words, in subwords, where redirections or pipes or ';' are
+** found. Each such redirection is put in another word.
+** Kinds of redirections it finds:
+**  >, >>, <<, <><><>>>><<><>< etc, 131231231>, 1132312>&1312312, 1231231>&-,
+**  ;, |.
+** The regex rule is specified at the top of the file.
+*/
+
+void			divide_by_redirections(t_lst_words **words)
 {
 	t_lst_words	*result;
+	t_lst_words	*word;
 	t_lst_inkey	*word_keys;
 
 	result = NULL;
-	for (; words; LTONEXT(words))
+	for (word = *words; word; LTONEXT(word))
 	{
-		if (words->content == NULL)
+		if (word->content == NULL)
 			continue;
-		word_keys = LCONT(words, t_lst_inkey*);
-		ft_lstadd(&result,
-			divide_word_by_redirections(word_keys));
-		// ft_lstdel(&word_keys, (t_ldel_func*)&sh_inkey_destruct);
+
+		word_keys = LCONT(word, t_lst_inkey*);
+		ft_lstadd(&result, _divide_word_by_redirections(word_keys));
 	}
-	return result;
+	del_lst_of_words_not_content(*words);
+	*words = result;
 }

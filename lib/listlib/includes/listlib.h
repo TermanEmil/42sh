@@ -66,14 +66,23 @@ void			ft_lst_push_front(t_list **first, t_list *new_el);
 ** Get
 */
 
-t_list			*ft_lstget(t_list *head, int index);
-const t_list	*ft_lst_roget(const t_list *head, int index);
+t_list			*ft_lstget(const t_list *head, int index);
 t_list			*ft_lst_get_last(t_list *head);
 int				ft_lstlen(t_list const *head);
+int				ft_lst_indexof(const t_list *lst,
+					const void *target, size_t target_size,
+					t_lst_cont_cmp *cmp);
+
+/*
+** Copy
+*/
+
 t_list			*ft_lstcpy_one(t_list const *head);
 t_list			*ft_lstcpy(t_list const *head);
 t_list			*ft_lst_full_cpy(t_list const *head,
 					t_lcpy_cont *cpy_f, t_ldel_func *del_f);
+t_list			*ft_lst_cpy_range(const t_list *head, int i1, int i2,
+					t_lcpy_cont *f_cpy_cont);
 
 /*
 ** Insert

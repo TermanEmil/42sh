@@ -36,7 +36,7 @@ void				del_lst_of_words_not_content(t_lst_words *words);
 t_lst_words			*extract_words_from_keys(t_lst_inkey const *keys);
 void				process_dollar_values(
 						t_lst_words *words, const t_shvars *shvars);
-t_lst_words			*divide_by_redirections(const t_lst_words *words);
+void				divide_by_redirections(t_lst_words **words);
 
 /*
 ** Word processing (both in same file).

@@ -23,7 +23,7 @@
 ** Realocate the memory for buffer (stock), adding to it the new_str
 */
 
-int			ft_addstr(char **buffer, char *new_str, size_t size)
+static int	ft_addstr(char **buffer, char *new_str, size_t size)
 {
 	char	*aux;
 
@@ -41,7 +41,7 @@ int			ft_addstr(char **buffer, char *new_str, size_t size)
 ** Removes the stock indexed with fd from head 'list'
 */
 
-int			remove_stock(t_fd_stock **head, int const fd)
+static int	remove_stock(t_fd_stock **head, int const fd)
 {
 	t_fd_stock		*prev;
 	t_fd_stock		*aux;
@@ -68,7 +68,7 @@ int			remove_stock(t_fd_stock **head, int const fd)
 ** If the head (or current cellule is null) creates a new cell
 */
 
-char		**get_stock(t_fd_stock **head, int const fd)
+static char	**get_stock(t_fd_stock **head, int const fd)
 {
 	if (*head == NULL)
 	{
@@ -84,10 +84,10 @@ char		**get_stock(t_fd_stock **head, int const fd)
 }
 
 /*
-** I've just ran out of lines ...
+** I've just run out of lines ...
 */
 
-int			form_result(char **stock, char **line, t_fd_stock **head, int fd)
+static int	form_result(char **stock, char **line, t_fd_stock **head, int fd)
 {
 	char	*new_line;
 	int		stock_len;
