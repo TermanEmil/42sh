@@ -23,11 +23,17 @@ struct				s_logic_vars
 };
 
 /*
+** Destructors
+*/
+
+void				del_lst_of_words(t_lst_words *words);
+void				del_lst_of_words_not_content(t_lst_words *words);
+
+/*
 ** lst of words
 */
 
 t_lst_words			*extract_words_from_keys(t_lst_inkey const *keys);
-void				del_lst_of_words(t_lst_words *words);
 void				process_dollar_values(
 						t_lst_words *words, const t_shvars *shvars);
 t_lst_words			*divide_by_redirections(const t_lst_words *words);

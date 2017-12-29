@@ -92,7 +92,7 @@ int		key_cmd_enter(void)
 		words = extract_words_from_keys(keys);
 		
 		tmp_words = divide_by_redirections(words);
-		del_lst_of_words(words);
+		del_lst_of_words_not_content(words);
 		words = tmp_words;
 		
 		process_dollar_values(words, &g_shdata.shvars);

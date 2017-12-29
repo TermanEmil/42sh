@@ -138,13 +138,13 @@ t_lst_words	*divide_word_by_redirections(t_lst_inkey *word_keys)
 	regex_t		regex_patern;
 	regmatch_t	pmatch;
 	int			i;
-	int			index_dif;
+	t_lst_inkey	*word_buf;
 
 	ret = regcomp(&regex_patern, regex_redir_patern, 0);
 	if (ret != 0)
 		ft_proj_err("Regex failed at divide_by_redirections (1)", 1);
 
-	index_dif = 0;
+	word_buf = NULL;
 	i = 0;
 	while (word_str[i] && word_keys != NULL)
 	{
@@ -154,49 +154,57 @@ t_lst_words	*divide_word_by_redirections(t_lst_inkey *word_keys)
 			t_lst_inkey	*start_of_match;
 			int			index_of_first_matching_key;
 			t_sh_inkey	*start_of_match_key;
-			int len_of_matching;
+			int			 len_of_matching;
 
 			start_of_match = get_shinkey_at_strlen(word_keys,
-				pmatch.rm_so + index_dif);
+				pmatch.rm_so);
 			index_of_first_matching_key = ft_lst_indexof(
 				word_keys, start_of_match->content, 0, &std_lst_cont_ptr_cmp);
 			start_of_match_key = LCONT(start_of_match, t_sh_inkey*);
 
 			len_of_matching	= pmatch.rm_eo - pmatch.rm_so;
 
-			ft_printf("\n'%s' %d|%d|%d-%d len:%d '%s'\n",
-				sh_inkey_get_meaning(start_of_match_key),
-				i, index_of_first_matching_key, pmatch.rm_so, pmatch.rm_eo,
-				len_of_matching, word_str + i);
-			term_getch();
-
 			if (!ft_strchr("\"\'\\`()[]{}", start_of_match_key->inside_of))
 			{
+				t_lst_inkey	*to_add;
+
+				to_add = NULL;
+				if (word_buf != NULL)
+				{
+					to_add = word_buf;
+					word_buf = NULL;
+				}
+				
 				if (start_of_match != word_keys)
 				{
-					ft_lstadd(&result,
-						ft_lstnew_nocpy(ft_lst_cpy_range(word_keys, 0,
-							index_of_first_matching_key - 1,
-							(t_lcpy_cont*)&sh_inkey_cpy_construct_ptr),
-						sizeof(t_list*)));
+					ft_lstadd(&to_add, ft_lst_cpy_range(word_keys, 0,
+						index_of_first_matching_key - 1,
+						(t_lcpy_cont*)&std_mem_assign));
 				}
+
+				if (to_add)
+					ft_lstadd(&result,
+						ft_lstnew_nocpy(to_add, sizeof(to_add)));
 
 				ft_lstadd(&result,
 					ft_lstnew_nocpy(
 						ft_lst_cpy_range(word_keys,
 							index_of_first_matching_key,
 							index_of_first_matching_key + len_of_matching - 1,
-							(t_lcpy_cont*)&sh_inkey_cpy_construct_ptr),
+							(t_lcpy_cont*)&std_mem_assign),
 						sizeof(t_list*)));
-
-				word_keys = ft_lstget(word_keys,
-					index_of_first_matching_key + len_of_matching);
-				
-				index_dif = 0;
 			}
 			else
-				index_dif = pmatch.rm_eo;
+			{
+				ft_lstadd(&word_buf,
+					ft_lst_cpy_range(word_keys, 0,
+						index_of_first_matching_key + len_of_matching - 1,
+						(t_lcpy_cont*)&std_mem_assign));
+			}
+
 			i += ((pmatch.rm_eo == 0) ? 1 : (pmatch.rm_eo));
+			word_keys = ft_lstget(word_keys,
+				index_of_first_matching_key + len_of_matching);
 		}
 		else if (ret == REG_NOMATCH)
 			break;
@@ -207,15 +215,26 @@ t_lst_words	*divide_word_by_redirections(t_lst_inkey *word_keys)
 	free(word_str);
 	regfree(&regex_patern);
 
+	t_lst_inkey	*to_add;
+
+	to_add = NULL;
+	if (word_buf != NULL)
+	{
+		to_add = word_buf;
+		word_buf = NULL;
+	}
+
 	if (word_keys != NULL)
 	{
 		t_lst_inkey	*cpy = ft_lst_full_cpy(
 			word_keys,
-			(t_lcpy_cont*)&sh_inkey_cpy_construct_ptr,
+			(t_lcpy_cont*)&std_mem_assign,
 			(t_ldel_func*)&sh_inkey_destruct);
-
-		ft_lstadd(&result, ft_lstnew_nocpy(cpy, sizeof(cpy)));
+		ft_lstadd(&to_add, cpy);
 	}
+
+	if (to_add)
+		ft_lstadd(&result, ft_lstnew_nocpy(to_add, sizeof(to_add)));
 
 	return result;
 }
