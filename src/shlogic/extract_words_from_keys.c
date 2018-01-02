@@ -37,7 +37,7 @@ t_lst_words	*extract_words_from_keys(t_lst_inkey const *keys)
 		inkey = LCONT(keys, t_sh_inkey*);	
 		if (inkey == NULL ||
 			(ft_strstr(" \t", (key = sh_inkey_get_meaning(inkey))) &&
-			(ft_strchr("'\"\\`", inkey->inside_of) == NULL)))
+			(ft_strchr("'\"\\`()", inkey->inside_of) == NULL)))
 		{
 			add_word(&words, &word_buf);
 		}

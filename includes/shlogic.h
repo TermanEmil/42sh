@@ -39,6 +39,13 @@ void				process_dollar_values(
 void				divide_by_redirections(t_lst_words **words);
 
 /*
+** Main
+*/
+
+void				process_shell_input(t_lst_inkey *keys,
+						const t_shvars *shvars);
+
+/*
 ** Word processing (both in same file).
 */
 
@@ -60,7 +67,7 @@ t_str				get_tilde_value(t_rostr tilde_prefix,
 ** Utils
 */
 
-void				debug_print_strings(t_str *strings);
+void				debug_print_strings(t_str *strings, int top_start);
 t_str				extract_var_name_from_keys(const t_lst_inkey *keys);
 t_str				word_to_str(const t_lst_inkey *keys);
 

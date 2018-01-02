@@ -83,23 +83,9 @@ int		key_cmd_enter(void)
 
 	keys = current_in_all_lines_to_lst(g_current_in, &g_shinput->history);
 	ret = assign_what_are_insideof(keys);
+
 	if (process_bracket_completion(ret) == 0)
-	{
-		t_lst_words	*words;
-		t_lst_words	*tmp_words;
-		t_str		*argv;
-
-		words = extract_words_from_keys(keys);
-		
-		divide_by_redirections(&words);
-		process_dollar_values(words, &g_shdata.shvars);
-		proceess_tilde(words, &g_shdata.shvars);
-
-		argv = words_to_argv(words);
-		debug_print_strings(argv);
-		ft_free_bidimens(argv);
-		del_lst_of_words(words);
-	}
+		process_shell_input(keys, &g_shdata.shvars);
 
 	input_mv_current_in_to_history(g_shinput);
 	term_putnewl();

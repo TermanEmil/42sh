@@ -19,7 +19,7 @@ static const t_rostr	g_regex_redir_patern =
 */
 
 static void		_process_base_case(
-					t_lst_inkey	**result,
+					t_lst_words	**result,
 					const t_lst_inkey *word_keys,
 					int match_i,
 					int len_of_match,
@@ -37,15 +37,11 @@ static void		_process_base_case(
 	if (match_i != 0)
 	{
 		ft_lstadd(&to_add, ft_lst_cpy_range(word_keys, 0,
-			match_i - 1,
-			(t_lcpy_cont*)&std_mem_assign));
+			match_i - 1, (t_lcpy_cont*)&std_mem_assign));
 	}
 
 	if (to_add)
-	{
-		ft_lstadd(result,
-			ft_lstnew_nocpy(to_add, sizeof(to_add)));
-	}
+		ft_lstadd(result, ft_lstnew_nocpy(to_add, sizeof(to_add)));
 
 	ft_lstadd(result, ft_lstnew_nocpy(ft_lst_cpy_range(word_keys, match_i,
 			match_i + len_of_match - 1, (t_lcpy_cont*)&std_mem_assign),
@@ -63,7 +59,7 @@ static void		_process_base_case(
 */
 
 static int		_process_regex_match(
-					t_lst_inkey **result,
+					t_lst_words **result,
 					t_lst_inkey **word_keys,
 					t_lst_inkey **word_buf,
 					regmatch_t pmatch)
@@ -95,7 +91,7 @@ static int		_process_regex_match(
 */
 
 static void		_add_words_at_each_regex_match(
-					t_lst_inkey **result,
+					t_lst_words **result,
 					t_lst_inkey **word_keys,
 					t_lst_inkey **word_buf,
 					t_rostr word_str)
@@ -129,7 +125,7 @@ static void		_add_words_at_each_regex_match(
 */
 
 static void		_add_reaming_keys(
-					t_lst_inkey **result,
+					t_lst_words **result,
 					const t_lst_inkey *word_keys,
 					t_lst_inkey **word_buf)
 {

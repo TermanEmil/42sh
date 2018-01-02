@@ -30,7 +30,7 @@
 
 NAME		=	42sh
 FLAGS		=	-Wall -Wextra -Werror
-CC			=	gcc
+CC			=	gcc -g
 
 
 LIBROOT		=	./lib
