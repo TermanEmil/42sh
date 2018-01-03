@@ -155,7 +155,7 @@ int				ft_indexof(char **table, char *str);
 int				ft_index_of_word(char *word, char *str, char *delims);
 char			**ft_strtok(char const *s, const char *sep);
 char			*ft_strmegajoin(int argc, ...);
-char			*ft_strnchr(const char *s, char *chars);
+char			*ft_strnchr(const char *s, const char *chars);
 void			ft_strdelif(char **str);
 char			*ft_strreplace(char *dest, char *target, const char *str);
 int				ft_strends_winth(char *str, char *end);
@@ -172,7 +172,7 @@ t_str			ft_strnew_raw(size_t const len);
 void			ft_to_utf8(wchar_t c, t_uchar *buffer);
 char			*ft_str_to_utf8(wchar_t *wstr, int nb_bytes);
 int				char_is_utf8(const unsigned char *key);
-char const		*utf8_get_first(unsigned char const * const key);
+char const		*utf8_get_first(unsigned char const *key);
 wchar_t			char8_to_wchar(const unsigned char *c_str);
 
 /*

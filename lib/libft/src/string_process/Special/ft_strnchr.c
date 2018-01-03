@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-char	*ft_strnchr(const char *s, char *chars)
+char	*ft_strnchr(const char *s, const char *chars)
 {
 	while (*s && ft_strchr(chars, *s) == NULL)
 		s++;

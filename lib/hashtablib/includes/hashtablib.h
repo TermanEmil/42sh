@@ -103,6 +103,7 @@ t_hashtab		*new_hashtab(size_t tablen,
 					t_del_mem_f *kdel, t_del_mem_f *vdel);
 void			del_hashtab(t_hashtab **tab);
 int				hashtab_add_pair(t_hashtab *htab, t_hashpair *newpair);
+int				htab_set_pair(t_hashtab *htab, const t_hashpair *pair);
 void			htab_iter(t_hashtab *htab, t_const_iter_f *f);
 void			htab_rehash(t_hashtab *htab, size_t size_to_add);
 float			hashtab_load_factor(t_hashtab const *hashtab);

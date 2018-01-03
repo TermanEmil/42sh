@@ -69,6 +69,7 @@ void	shlogic_exec(t_lst_words *words)
 	//-	Process tilda value ~
 
 	//-	Find what command it is:
+	//		is it setting a var?~
 	//		is it referring to a specific pointed program?
 	//		is it a built in cmd?
 	//		is it a program from PATH?
