@@ -5,19 +5,8 @@
 
 static void		print_cd_errors_(t_rostr dir)
 {
-	struct stat		buf;
-
-	if (stat(dir, &buf) < 0)
-	{
-		ft_error(FALSE, "%s: cd: %s: No such file or directory",
-			g_proj_name, dir);
-	}
-	else if (!S_ISDIR(buf.st_mode))
-		ft_error(FALSE, "%s: cd: %s: Not a directory", g_proj_name, dir);
-	else if (access(dir, X_OK) != 0)
-		ft_error(FALSE, "%s: cd: %s: Permission denied", g_proj_name, dir);
-	else
-		ft_error(FALSE, "%s: cd: %s: Unkown error", g_proj_name, dir);
+	ft_error(FALSE, "%s: cd: %s: %s\n", g_proj_name, dir, strerror(errno));
+	errno = 0;
 }
 
 static int		set_env_vars_after_cd_(

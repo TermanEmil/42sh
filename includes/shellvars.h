@@ -14,13 +14,14 @@
 
 typedef struct s_shvars	t_shvars;
 
-struct		s_shvars
+struct			s_shvars
 {
-	t_hashtab	*env;
-	t_hashtab	*local;
+	t_str_htab	*env;
+	t_str_htab	*local;
 };
 
-t_shvars	shvars_construct(const char **envp);
-void		shvars_destroy(t_shvars *shvars);
+t_shvars		shvars_construct(const char **envp);
+void			shvars_destroy(t_shvars *shvars);
+t_str			*shvars_form_key_val_tab(const t_hashtab *htab);
 
 #endif

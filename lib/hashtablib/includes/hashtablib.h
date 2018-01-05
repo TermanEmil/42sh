@@ -15,6 +15,12 @@ typedef struct s_hashpair	t_hashpair;
 typedef struct s_hashmem	t_hashmem;
 
 /*
+** Aliases.
+*/
+
+typedef t_hashtab			t_str_htab;
+
+/*
 ** This dummy value is placed instead of the removed bucket.
 ** in new_hashpair.c
 ** https://youtu.be/EJOIt0KWFr4?t=2m23s
@@ -124,6 +130,7 @@ t_hashpair		*htab_get_next_pair(t_hashtab *htab, t_hashmem key,
 					ssize_t *last_i, ssize_t *start);
 t_hashpair		*htab_get_next_pair_iter(t_hashtab *htab, t_hashmem key,
 					ssize_t *last_i, t_cmp_f *cmp_f);
+int				htab_count(const t_hashtab *htab);
 
 /*
 ** Hash functions

@@ -7,6 +7,9 @@
 
 typedef struct s_logic_vars		t_logic_vars;
 typedef struct s_ft_system_ret	t_ft_system_ret;
+typedef struct s_input_output	t_input_output;
+
+typedef int						(t_exec_cmd_f)(const t_str*, t_shvars*);
 
 /*
 ** A list of list of t_sh_inkeys.
@@ -16,11 +19,34 @@ typedef struct s_ft_system_ret	t_ft_system_ret;
 
 typedef t_list		t_lst_words;
 
-struct				s_logic_vars
+/*
+** t_grps_wrds stands for: list of groups of words.
+*/
+
+typedef t_lst_words	t_grps_wrds;
+typedef t_grps_wrds	t_cmd_queue;
+typedef t_grps_wrds	t_pipe_queue;
+
+
+struct				s_input_output
 {
-	t_hashtab		*env;
-	t_hashtab		*vars;
+	int				in;
+	int				out;
 };
+
+/*
+** execute_cmd
+*/
+
+void				execute_cmd_exit();
+int					execute_cmd_cd(const t_str *argv, t_shvars *shvars);
+int					execute_cmd_set_local_var(const t_str *argv,
+						t_shvars *shvars);
+
+/*
+** Initializers
+*/
+t_hashtab			*init_built_in_cmds_htab();
 
 /*
 ** Destructors
@@ -39,11 +65,22 @@ void				process_dollar_values(
 void				divide_by_redirections(t_lst_words **words);
 
 /*
+** Groupds of words.
+*/
+
+t_grps_wrds			*group_words_by_delim(t_lst_words *words, t_rostr delim);
+void				del_groups_of_words(t_grps_wrds *groups_of_words);
+void				debug_print_groups_of_words(
+						const t_grps_wrds *groups_of_words);
+
+/*
 ** Main
 */
 
-void				process_shell_input(t_lst_inkey *keys,
-						const t_shvars *shvars);
+void				process_shell_input(
+						t_lst_inkey *keys,
+						t_shvars *shvars,
+						const t_hashtab *built_in_cmds);
 
 /*
 ** Word processing (both in same file).
@@ -63,6 +100,18 @@ t_lst_inkey			*process_tilde_in_word(const t_lst_inkey *word,
 t_str				get_tilde_prefix(const t_lst_inkey *keys, int *len);
 t_str				get_tilde_value(t_rostr tilde_prefix,
 						const t_shvars *shvars);
+
+/*
+** execute_cmd: utils
+*/
+
+t_bool				cmd_is_set_var(t_rostr str);
+t_bool				cmd_is_specific_program(t_rostr cmd);
+t_str				find_cmd_in_env_path(t_rostr cmd, const t_shvars *shvars);
+t_exec_cmd_f		*get_sh_builtin_f(t_rostr cmd,
+						const t_hashtab *built_in_cmds);
+pid_t				execute_cmd(t_input_output fd_io, t_rostr cmd_path,
+						const t_str *argv, t_shvars *shvars);
 /*
 ** Utils
 */

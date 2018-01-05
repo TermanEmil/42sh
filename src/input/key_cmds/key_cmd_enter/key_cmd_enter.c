@@ -86,10 +86,11 @@ int		key_cmd_enter(void)
 	ret = assign_what_are_insideof(keys);
 
 	if (process_bracket_completion(ret) == 0)
-		process_shell_input(keys, &g_shdata.shvars);
+		process_shell_input(keys, &g_shdata.shvars, g_shdata.built_in_cmds);
 
 	input_mv_current_in_to_history(g_shinput);
-	term_putnewl();
+	// term_putnewl();
+	// term_getch();
 	input_reprint_here(g_current_in);
 
 	ft_lstdel(&keys, NULL);

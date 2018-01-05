@@ -103,6 +103,7 @@ ssize_t				term_get_height(void);
 void				term_init_internal_data(char const *termtype,
 						char *term_buf);
 void				term_setup(char const *termtype, t_term_data *term_data);
+void				term_enable_raw_mode(t_term_data *term_data);
 void				term_restore(t_termios const *old_term);
 void				term_save_current_term_data(void);
 void				term_restore_to_old_term_data(void);

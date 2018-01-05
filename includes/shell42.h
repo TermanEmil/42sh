@@ -25,6 +25,7 @@ struct				s_shdata
 	char			prompt[36];
 	t_shinput		input;
 	t_shvars		shvars;
+	t_hashtab		*built_in_cmds;
 };
 
 /*

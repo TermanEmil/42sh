@@ -68,13 +68,17 @@ void		listen_to_signals(void)
 		ft_proj_err("can't listen to SIGWINCH", 1);
 	set_sigint();
 	
-	i = 0;
+	i = 1;
 	while (i < 32)
 	{
 		if (i != SIGKILL && i != SIGSTOP && i != SIGCHLD && i != SIGCONT &&
 			i != SIGURG && i != SIGIO && i != SIGWINCH && i != SIGTSTP &&
 			i != SIGINT)
+		{
 			signal(i, &handle_signal);
+			if (errno != 0)
+				ft_err_erno(errno, TRUE);
+		}
 		i++;
 	}
 }

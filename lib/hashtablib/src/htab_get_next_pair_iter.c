@@ -1,12 +1,15 @@
 #include "hashtablib.h"
 
 /*
-** Iterates through all the hashtab finding all instances which match the cmp_f
+** Iterates through all the hashtab finding all instances which match the cmp_f.
+** Give to cmp_f NULL to get all non null and non dummy pairs.
 */
 
-t_hashpair	*htab_get_next_pair_iter(t_hashtab * const htab,
-				t_hashmem const key, ssize_t * const last_i,
-				t_cmp_f * const cmp_f)
+t_hashpair	*htab_get_next_pair_iter(
+				t_hashtab *htab,
+				t_hashmem const key,
+				ssize_t *last_i,
+				t_cmp_f *cmp_f)
 {
 	t_hashpair	*pair;
 
@@ -19,7 +22,9 @@ t_hashpair	*htab_get_next_pair_iter(t_hashtab * const htab,
 			return (NULL);
 	}
 	pair = htab->tab[*last_i];
-	if (pair == NULL ||
+	if (pair != NULL && cmp_f == NULL && pair != &g_htab_dummy)
+		return (pair);
+	if (pair == NULL || pair == &g_htab_dummy ||
 		cmp_f(pair->key.mem, key.mem, pair->key.size, key.size) != 0)
 		return (htab_get_next_pair_iter(htab, key, last_i, cmp_f));
 	return (pair);

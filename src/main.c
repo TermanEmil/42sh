@@ -13,7 +13,7 @@ t_current_input	*g_current_in;
 int		main(int argc, const char **argv, const char **envp)
 {
 	init_shell(envp);
-
+	
 	ft_putstr("42sh shell by eterman");
 	term_putnewl();
 	input_reprint_here(g_current_in);

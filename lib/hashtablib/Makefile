@@ -37,7 +37,7 @@ EOC			=	'\033[0m'
 
 NAME		=	hashtablib.a
 LIBNAME		=	hashtablib.a
-CC			=	gcc
+CC			=	gcc -g
 
 GOOD_FLAGS	=	-Wfloat-equal		\
 				-Wundef				\

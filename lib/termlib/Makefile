@@ -49,7 +49,7 @@ FLAGS		=	$(GOOD_FLAGS)		\
 				-pedantic			\
 				-Wunreachable-code	\
 
-CC			=	gcc
+CC			=	gcc -g
 
 LIB_ROOT	=	..
 LIB_DIRS	=								\

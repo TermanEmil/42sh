@@ -35,7 +35,7 @@ EOC			=	'\033[0m'
 
 
 NAME		=	listlib.a
-CC			=	gcc
+CC			=	gcc -g
 
 GOOD_FLAGS	=	-Wfloat-equal		\
 				-Wundef				\
