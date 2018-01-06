@@ -1,7 +1,5 @@
 #include "shlogic.h"
 
-static const int	g_child_porcess_ = 0;
-
 static void	dup_and_close_(int fd, int default_fd)
 {
 	if (fd != default_fd)
@@ -25,7 +23,7 @@ pid_t		execute_cmd(
 	if (pid == -1)
 		ft_err_erno(errno, TRUE);
 
-	if (pid == g_child_porcess_)
+	if (pid == CHILD_PROCESS_PID)
 	{
 		dup_and_close_(fd_io.in, STDIN_FILENO);
 		dup_and_close_(fd_io.out, STDOUT_FILENO);

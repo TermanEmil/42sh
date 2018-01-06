@@ -5,11 +5,10 @@
 # include "listlib.h"
 # include "shinput.h"
 
-# define PIPE_DELIM "(\\||\\|&)"
+# define CHILD_PROCESS_PID 0
 
-typedef struct s_logic_vars		t_logic_vars;
-typedef struct s_ft_system_ret	t_ft_system_ret;
 typedef struct s_input_output	t_input_output;
+typedef struct s_to_dup			t_to_dup;
 
 typedef int						(t_exec_cmd_f)(const t_str*, t_shvars*);
 
@@ -26,12 +25,20 @@ typedef t_list		t_lst_words;
 */
 
 typedef t_lst_words	t_grps_wrds;
+typedef t_list		t_lst_to_dup;
+
+struct				s_to_dup
+{
+	int				fd;
+	int				default_fd;
+};
 
 struct				s_input_output
 {
 	int				in;
 	int				out;
 	int				err;
+	t_lst_to_dup	*other;
 };
 
 /*
@@ -87,7 +94,7 @@ void				process_shell_input(
 ** Word processing (both in same file).
 */
 
-t_str				word_to_display_str(const t_lst_inkey *keys);
+t_str				word_to_argv(const t_lst_inkey *keys);
 t_str				*words_to_argv(t_lst_words *words);
 
 /*

@@ -1,5 +1,5 @@
 #include "shlogic.h"
-#include "shell42_utils.h"
+#include "regex_tools.h"
 
 /*
 ** Check if the given word keys match patern.

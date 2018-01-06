@@ -1,6 +1,9 @@
 #include "shlogic.h"
-#include "shell42_utils.h"
+#include "regex_tools.h"
 #include <sys/wait.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 
 t_bool	word_is_valid_redirection(const t_lst_inkey* in_keys)
 {
@@ -35,7 +38,7 @@ t_str	*extract_argv(const t_lst_words *words)
 			break;
 		else
 		{
-			tmp = word_to_display_str(LCONT(words, t_lst_inkey*));
+			tmp = word_to_argv(LCONT(words, t_lst_inkey*));
 			if (tmp == NULL)
 				ft_err_mem(TRUE);
 			argv[i] = tmp;
@@ -103,30 +106,216 @@ static t_bool	pipe_should_redir_stderr_(const t_grps_wrds *next_group)
 	return words_match_single(words, "\\|&");
 }
 
-t_input_output	process_redirections(
-					t_grps_wrds *pipe_queue,
+static void		process_pipe_redirs_(
+					t_input_output *fd_io,
+					const t_grps_wrds *pipe_queue,
+					int fd_in,
+					const int *pipe_fd)
+{
+	fd_io->in = fd_in;
+	if (pipe_queue->next == NULL)
+		fd_io->out = STDOUT_FILENO;
+	else
+		fd_io->out = pipe_fd[g_write_end_];
+
+	if (pipe_should_redir_stderr_(pipe_queue))
+		fd_io->err = STDOUT_FILENO;
+	else
+		fd_io->err = STDERR_FILENO;
+}
+
+#define REG_TO_FILE_REDIR_	"[0-9]*[><]+"
+#define REG_TO_FD_REDIR_	"[0-9]*[><]+&[0-9]+"
+#define REG_CLOSE_FD_		"[0-9]*[><]+&-"
+
+#define REG_ALL_3_REDIRS_	"("						\
+							REG_TO_FILE_REDIR_ "|"	\
+							REG_TO_FD_REDIR_ "|"	\
+							REG_CLOSE_FD_")"		\
+
+#define REG_ANY_FILE_REDIR_	"("						\
+							REG_TO_FILE_REDIR_ "|"	\
+							REG_TO_FD_REDIR_")"		\
+
+static void		extract_fds_from_redir_(t_rostr redir_str, int *fd1, int *fd2)
+{
+	t_str	buf;
+	t_rostr	start_of_redir;
+
+	start_of_redir = ft_strnchr(redir_str, "><");
+	if (start_of_redir == redir_str)
+		*fd1 = -1;
+	else
+		*fd1 = ft_atoi(redir_str);
+
+	buf = regex_get_match("[0-9]+", start_of_redir);
+
+	if (buf == NULL)
+		*fd2 = -1;
+	else
+	{
+		*fd2 = ft_atoi(buf);
+		free(buf);
+	}
+}
+
+const t_to_dup	*new_to_dup_fds(int fd, int default_fd)
+{
+	static t_to_dup	to_dup;
+
+	to_dup.fd = fd;
+	to_dup.default_fd = default_fd;
+	return &to_dup;
+}
+
+static int		process_redir_to_file_(
+					t_input_output *fd_io,
+					t_rostr redir_str,
+					t_lst_words *next_words,
+					t_list **fds_to_close)
+{
+	int		fd1;
+	int		fd2;
+	t_str	redir_type;
+	t_str	after_redir_type;
+
+	t_str	next_word_str;
+
+	extract_fds_from_redir_(redir_str, &fd1, &fd2);
+	redir_type = regex_get_match("[><]+", redir_str);
+	after_redir_type =
+		regex_get_match("(&|-)", redir_str + ft_strlen(redir_type));
+
+	if (regex_mini_match(REG_ANY_FILE_REDIR_, redir_str))
+	{
+		if (next_words == NULL)
+		{
+			return -1;
+		}
+
+		next_word_str = word_to_argv(LCONT(next_words, t_lst_inkey*));
+		if (next_word_str == NULL)
+			ft_err_mem(TRUE);
+
+		if (ft_strequ(redir_type, ">") || ft_strequ(redir_type, ">>"))
+		{
+			t_to_dup	to_dup;
+			int			fd[2];
+
+			// if (fd1 >= 0)
+			// {
+			// 	if (pipe(fd) != 0)
+			// 		ft_err_erno(errno, TRUE);
+			// 	to_dup.fd = fd[g_write_end_];
+			// 	to_dup.default_fd = fd1;
+			// 	ft_lstadd(&fd_io->other, ft_lstnew(&to_dup, sizeof(to_dup)));
+			// }
+			
+			int		file_fd;
+			int		open_flags;
+
+			open_flags = O_WRONLY | O_CREAT;
+			if (ft_strequ(redir_type, ">>"))
+				open_flags |= O_APPEND;
+
+			file_fd = open(next_word_str, open_flags, 0644);
+			if (file_fd == -1)
+			{
+				ft_error(FALSE, "%s: %s: %s\n",
+					g_proj_name, next_word_str, strerror(errno));
+				errno = 0;
+				return -1;
+			}
+
+			fd_io->out = file_fd;
+
+			// pid_t	pid;
+
+			// if ((pid = fork()) == -1)
+			// 	ft_err_erno(errno, TRUE);
+
+			// if (pid == CHILD_PROCESS_PID)
+			// {
+
+			// }
+			// else
+			// {
+
+			// }
+		}
+		else if (ft_strequ(redir_type, "<") || ft_strequ(redir_type, "<<"))
+		{
+
+		}
+		else
+		{
+
+		}
+
+		free(next_word_str);
+	}
+	else if (regex_mini_match(REG_CLOSE_FD_, redir_str))
+	{
+
+	}
+	else
+	{
+		return -1;
+	}
+	// else if (regex_mini_match(REG_TO_FD_REDIR_, word_str))
+	// {
+
+	// }
+	// else if (regex_mini_match(REG_CLOSE_FD_, word_str))
+	// {
+
+	// }
+
+	ft_memdel((void**)&redir_type);
+	ft_memdel((void**)&after_redir_type);
+	return 0;
+}
+
+static void		process_file_redirs_(
+					t_input_output *fd_io,
+					const t_lst_words *words,
+					int fd_in,
+					const int *pipe_fd)
+{
+	t_lst_inkey	*word_keys;
+	t_str		word_str;
+
+	for (; words; LTONEXT(words))
+	{
+		word_keys = LCONT(words, t_lst_inkey*);
+		word_str = word_to_str(word_keys);
+		if (word_str == NULL)
+			ft_err_mem(TRUE);
+
+		if (regex_mini_match(REG_ALL_3_REDIRS_, word_str))
+			process_redir_to_file_(fd_io, word_str, words->next, NULL);
+		
+		free(word_str);
+	}
+}
+
+void			process_redirections(
+					t_input_output *fd_io,
+					const t_grps_wrds *pipe_queue,
 					int *fd_in,
 					int *pipe_fd)
 {
-	t_input_output	fd_io;
-
+	fd_io->other = NULL;
 	if (pipe(pipe_fd) == -1)
 		ft_err_erno(errno, TRUE);
 
-	fd_io.in = *fd_in;
-	if (pipe_queue->next == NULL)
-		fd_io.out = STDOUT_FILENO;
-	else
-		fd_io.out = pipe_fd[g_write_end_];
-
-	if (pipe_should_redir_stderr_(pipe_queue))
-		fd_io.err = STDOUT_FILENO;
-	else
-		fd_io.err = STDERR_FILENO;
+	process_pipe_redirs_(fd_io, pipe_queue, *fd_in, pipe_fd);
+	process_file_redirs_(fd_io, LCONT(pipe_queue, t_lst_words*), *fd_in, pipe_fd);
 
 	*fd_in = pipe_fd[g_read_end_];
-	return fd_io;
 }
+
+#define PIPE_DELIM_ "(\\||\\|&)"
 
 void	process_pipe_queue(
 			t_grps_wrds *pipe_queue,
@@ -151,7 +340,7 @@ void	process_pipe_queue(
 	for (i = 0; pipe_queue; LTONEXT(pipe_queue), i++)
 	{
 		words = LCONT(pipe_queue, t_lst_words*);
-		if (words_match_single(words, PIPE_DELIM))
+		if (words_match_single(words, PIPE_DELIM_))
 			continue;
 
 		argv = extract_argv(words);
@@ -159,7 +348,7 @@ void	process_pipe_queue(
 		// for (int j = 0; argv[j]; j++)
 		// 	ft_printf(":%s:\n", argv[j]);
 
-		fd_io = process_redirections(pipe_queue, &in, fd + i * 2);
+		process_redirections(&fd_io, pipe_queue, &in, fd + i * 2);
 		process_argv(fd_io, argv, shvars, built_in_cmds);
 
 		if (close(fd[i * 2 + g_write_end_]) != 0)
@@ -197,7 +386,7 @@ void	process_cmds(
 		if (words_match_single(words, ";"))
 			continue;
 
-		pipe_queue = group_words_by_delim(words, PIPE_DELIM);
+		pipe_queue = group_words_by_delim(words, PIPE_DELIM_);
 		process_pipe_queue(pipe_queue, shvars, built_in_cmds);
 		del_groups_of_words(pipe_queue);
 	}
