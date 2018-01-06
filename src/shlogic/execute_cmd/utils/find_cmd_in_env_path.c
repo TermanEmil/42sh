@@ -9,7 +9,10 @@ static t_str	find_cmd_in_specific_path_(t_rostr path, t_rostr cmd)
 	t_str			file_path;
 
 	if ((dir_path = opendir(path)) == NULL)
+	{
+		errno = 0;
 		return NULL;
+	}
 	file_path = NULL;
 	while ((dir_buf = readdir(dir_path)) != NULL)
 	{
@@ -21,6 +24,7 @@ static t_str	find_cmd_in_specific_path_(t_rostr path, t_rostr cmd)
 			break;
 		}
 	}
+	errno = 0;
 	closedir(dir_path);
 	return file_path;
 }
@@ -32,6 +36,8 @@ t_str			find_cmd_in_env_path(t_rostr cmd, const t_shvars *shvars)
 	int		i;
 	t_str	result;
 
+	if (errno)
+		ft_err_erno(errno, TRUE);
 	path_val = htab_get_strval(shvars->env, new_hashmem_str("PATH"));
 	if (path_val == NULL)
 		return NULL;

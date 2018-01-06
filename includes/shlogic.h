@@ -5,6 +5,8 @@
 # include "listlib.h"
 # include "shinput.h"
 
+# define PIPE_DELIM "(\\||\\|&)"
+
 typedef struct s_logic_vars		t_logic_vars;
 typedef struct s_ft_system_ret	t_ft_system_ret;
 typedef struct s_input_output	t_input_output;
@@ -24,14 +26,12 @@ typedef t_list		t_lst_words;
 */
 
 typedef t_lst_words	t_grps_wrds;
-typedef t_grps_wrds	t_cmd_queue;
-typedef t_grps_wrds	t_pipe_queue;
-
 
 struct				s_input_output
 {
 	int				in;
 	int				out;
+	int				err;
 };
 
 /*
@@ -68,7 +68,8 @@ void				divide_by_redirections(t_lst_words **words);
 ** Groupds of words.
 */
 
-t_grps_wrds			*group_words_by_delim(t_lst_words *words, t_rostr delim);
+t_grps_wrds			*group_words_by_delim(t_lst_words *words,
+						t_rostr delim_reg_patern);
 void				del_groups_of_words(t_grps_wrds *groups_of_words);
 void				debug_print_groups_of_words(
 						const t_grps_wrds *groups_of_words);
@@ -119,5 +120,8 @@ pid_t				execute_cmd(t_input_output fd_io, t_rostr cmd_path,
 void				debug_print_strings(t_str *strings, int top_start);
 t_str				extract_var_name_from_keys(const t_lst_inkey *keys);
 t_str				word_to_str(const t_lst_inkey *keys);
+t_bool				word_matches(const t_lst_inkey *word_keys, t_rostr patern);
+t_bool				words_match_single(const t_lst_words *words,
+						t_rostr patern);
 
 #endif

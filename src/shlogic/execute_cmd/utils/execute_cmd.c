@@ -29,12 +29,13 @@ pid_t		execute_cmd(
 	{
 		dup_and_close_(fd_io.in, STDIN_FILENO);
 		dup_and_close_(fd_io.out, STDOUT_FILENO);
+		dup_and_close_(fd_io.err, STDERR_FILENO);
 
 		env_tab = shvars_form_key_val_tab(shvars->env);
 		if (execve(cmd_path, argv, env_tab) == -1)
 		{
-			ft_free_bidimens(env_tab);
-			ft_error(TRUE, "%s: %s", argv[0], strerror(errno));
+			ft_error(TRUE, "%s: %s: %s\n",
+				g_proj_name, argv[0], strerror(errno));
 		}
 	}
 

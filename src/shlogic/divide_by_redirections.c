@@ -5,13 +5,13 @@
 ** It includes all kinds of redirections or ';|'.
 */
 
-static const t_rostr	g_regex_redir_patern =
+static const t_rostr	g_regex_redir_patern_ =
 	"\\("
 	"[0-9]*[><]\\+\\|"
-	"[0-9]*[><]\\+\\&[0-9]*\\|"
+	"[0-9]*[><]\\+\\&[0-9]+\\|"
 	"[0-9]*[><]\\+\\&-\\|"
 	";\\|"
-	"|\\)";
+	"|\\||&\\)";
 
 /*
 ** Process the case when a match has been found and it's not inside of any kind
@@ -101,7 +101,7 @@ static void		_add_words_at_each_regex_match(
 	regex_t		regex_patern;
 	regmatch_t	pmatch;
 
-	ret = regcomp(&regex_patern, g_regex_redir_patern, 0);
+	ret = regcomp(&regex_patern, g_regex_redir_patern_, 0);
 	if (ret != 0)
 		ft_proj_err("Regex failed at divide_by_redirections (1)", 1);
 
