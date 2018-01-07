@@ -7,48 +7,69 @@
 
 # define CHILD_PROCESS_PID 0
 
-typedef struct s_input_output	t_input_output;
-typedef struct s_to_dup			t_to_dup;
-
-typedef int						(t_exec_cmd_f)(const t_str*, t_shvars*);
-
 /*
 ** A list of list of t_sh_inkeys.
 ** First key from the first word:
 ** LCONT((LCONT(words, t_list*)), t_sh_inkey*)
 */
 
-typedef t_list		t_lst_words;
+typedef t_list					t_lst_words;
 
 /*
 ** t_grps_wrds stands for: list of groups of words.
 */
 
-typedef t_lst_words	t_grps_wrds;
-typedef t_list		t_lst_to_dup;
+typedef t_lst_words				t_grps_wrds;
+typedef t_list					t_lst_to_dup;
 
-struct				s_to_dup
+typedef struct s_cmd_env		t_cmd_env;
+typedef const t_hashtab			t_c_htab;
+typedef const t_grps_wrds		t_c_grps_words;
+
+typedef int						(t_exec_cmd_f)(t_cmd_env*);
+
+typedef struct		s_to_dup
 {
 	int				fd;
 	int				default_fd;
-};
+	t_bool			to_close;
+}					t_to_dup;
 
-struct				s_input_output
+typedef struct		s_input_output
 {
 	int				in;
 	int				out;
 	int				err;
 	t_lst_to_dup	*other;
+}					t_input_output;
+
+struct				s_cmd_env
+{
+	t_shvars		*shvars;
+	t_input_output	fd_io;
+	const t_str		*argv;
+	int				*piped_fds;
+	t_c_grps_words	*pipe_queue_iter;
 };
+
+typedef struct		s_pipe_env
+{
+	t_c_grps_words*	pipe_queue;
+	t_c_htab		*built_in_cmds;
+	t_shvars		*shvars;
+	t_lst_int		*fds_to_close;
+	int				cmd_count;
+	int				current_pipe_input_fd;
+	t_bool			success;
+}					t_pipe_env;
 
 /*
 ** execute_cmd
 */
 
 void				execute_cmd_exit();
-int					execute_cmd_cd(const t_str *argv, t_shvars *shvars);
-int					execute_cmd_set_local_var(const t_str *argv,
-						t_shvars *shvars);
+int					execute_cmd_cd(t_cmd_env *cmd_env);
+int					execute_cmd_set_local_var(t_cmd_env *cmd_env);
 
 /*
 ** Initializers
@@ -116,15 +137,9 @@ t_str				get_tilde_value(t_rostr tilde_prefix,
 t_bool				cmd_is_set_var(t_rostr str);
 t_bool				cmd_is_specific_program(t_rostr cmd);
 t_str				find_cmd_in_env_path(t_rostr cmd, const t_shvars *shvars);
-t_exec_cmd_f		*get_sh_builtin_f(t_rostr cmd,
-						const t_hashtab *built_in_cmds);
-pid_t				execute_cmd(t_input_output fd_io, t_rostr cmd_path,
-						const t_str *argv, const t_shvars *shvars);
-void				execute_built_in(
-						t_input_output fd_io,
-						t_exec_cmd_f *exec_cmd_f,
-						const t_str *argv,
-						t_shvars *shvars);
+t_exec_cmd_f		*get_sh_builtin_f(t_rostr cmd, const t_hashtab *built_in);
+pid_t				execute_cmd(t_cmd_env *cmd_env, t_rostr cmd_path);
+void				execute_built_in(t_cmd_env *cmd_env, t_exec_cmd_f *cmd_f);
 /*
 ** Utils
 */

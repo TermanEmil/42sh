@@ -22,6 +22,7 @@
 
 typedef struct s_list	t_list;
 typedef t_list			t_lst_str;
+typedef t_list			t_lst_int;
 
 typedef void	(t_ldel_func)(void*, size_t);
 typedef void*	(t_lcpy_cont)(void*, size_t);
@@ -111,6 +112,7 @@ t_list			*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 void			ft_lstiter_arg(t_list *lst, t_liter_arg *f, int argc, ...);
 void			ft_lstiter_arg_ptr(t_list *lst,
 					t_liter_arg_void *f, void *data);
+
 /*
 ** Miscellaneous
 */

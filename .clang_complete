@@ -1,4 +1,6 @@
 -I./includes
+-I./includes/utils
+
 -I./lib/eventlib/includes
 -I./lib/hashtablib/includes
 -I./lib/termlib/includes

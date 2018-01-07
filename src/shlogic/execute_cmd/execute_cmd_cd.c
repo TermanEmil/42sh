@@ -70,31 +70,31 @@ static t_str	get_home_dir_(t_shvars *shvars)
 	return ft_strdup(buf->pw_name);
 }
 
-int				execute_cmd_cd(const t_str *argv, t_shvars *shvars)
+int				execute_cmd_cd(t_cmd_env *cmd_env)
 {
 	t_str	dir;
 	int		ret;
 
-	if (argv[1] == NULL)
+	if (cmd_env->argv[1] == NULL)
 	{
-		if ((dir = get_home_dir_(shvars)) != NULL)
-			ret = cd_to_dir_(dir, shvars);
+		if ((dir = get_home_dir_(cmd_env->shvars)) != NULL)
+			ret = cd_to_dir_(dir, cmd_env->shvars);
 		else
 			ret = -1;
 		free(dir);
 	}
-	else if (ft_strequ(argv[1], "-"))
+	else if (ft_strequ(cmd_env->argv[1], "-"))
 	{
-		dir = htab_get_strval(shvars->env, new_hashmem_str("OLDPWD"));
+		dir = htab_get_strval(cmd_env->shvars->env, new_hashmem_str("OLDPWD"));
 		if (dir == NULL)
 		{
 			ft_error(FALSE, "%s: cd: OLDPWD not set", g_proj_name);
 			ret = -1;
 		}
 		else
-			ret = cd_to_dir_(dir, shvars);
+			ret = cd_to_dir_(dir, cmd_env->shvars);
 	}
 	else
-		ret = cd_to_dir_(argv[1], shvars);
+		ret = cd_to_dir_(cmd_env->argv[1], cmd_env->shvars);
 	return ret;
 }
