@@ -65,7 +65,8 @@ pid_t	process_argv(
 	}
 	else if ((exec_cmd_f = get_sh_builtin_f(argv[0], built_in_cmds)))
 	{
-		exec_cmd_f(argv, shvars);
+		execute_built_in(fd_io, exec_cmd_f, argv, shvars);
+		// exec_cmd_f(argv, shvars);	
 		return 0;
 	}
 	else if (cmd_is_specific_program(argv[0]))
@@ -113,7 +114,7 @@ static void		process_pipe_redirs_(
 					const int *pipe_fd)
 {
 	fd_io->in = fd_in;
-	if (pipe_queue->next == NULL)
+	if (L_IS_LAST(pipe_queue))
 		fd_io->out = STDOUT_FILENO;
 	else
 		fd_io->out = pipe_fd[g_write_end_];
@@ -159,15 +160,6 @@ static void		extract_fds_from_redir_(t_rostr redir_str, int *fd1, int *fd2)
 	}
 }
 
-const t_to_dup	*new_to_dup_fds(int fd, int default_fd)
-{
-	static t_to_dup	to_dup;
-
-	to_dup.fd = fd;
-	to_dup.default_fd = default_fd;
-	return &to_dup;
-}
-
 static int		process_redir_to_file_(
 					t_input_output *fd_io,
 					t_rostr redir_str,
@@ -186,6 +178,7 @@ static int		process_redir_to_file_(
 	after_redir_type =
 		regex_get_match("(&|-)", redir_str + ft_strlen(redir_type));
 
+	next_word_str = NULL;
 	if (regex_mini_match(REG_ANY_FILE_REDIR_, redir_str))
 	{
 		if (next_words == NULL)
@@ -197,26 +190,23 @@ static int		process_redir_to_file_(
 		if (next_word_str == NULL)
 			ft_err_mem(TRUE);
 
-		if (ft_strequ(redir_type, ">") || ft_strequ(redir_type, ">>"))
+		if (ft_strequ(redir_type, ">") || ft_strequ(redir_type, ">>") || ft_strequ(redir_type, "<"))
 		{
 			t_to_dup	to_dup;
-			int			fd[2];
+			int			file_fd;
+			int			open_flags;
 
-			// if (fd1 >= 0)
-			// {
-			// 	if (pipe(fd) != 0)
-			// 		ft_err_erno(errno, TRUE);
-			// 	to_dup.fd = fd[g_write_end_];
-			// 	to_dup.default_fd = fd1;
-			// 	ft_lstadd(&fd_io->other, ft_lstnew(&to_dup, sizeof(to_dup)));
-			// }
 			
-			int		file_fd;
-			int		open_flags;
-
-			open_flags = O_WRONLY | O_CREAT;
-			if (ft_strequ(redir_type, ">>"))
-				open_flags |= O_APPEND;
+			if (ft_strchr(redir_type, '>'))
+			{
+				open_flags = O_WRONLY | O_CREAT;
+				if (ft_strequ(redir_type, ">>"))
+					open_flags |= O_APPEND;
+				else
+					open_flags |= O_TRUNC;
+			}
+			else
+				open_flags = O_RDONLY;
 
 			file_fd = open(next_word_str, open_flags, 0644);
 			if (file_fd == -1)
@@ -226,33 +216,31 @@ static int		process_redir_to_file_(
 				errno = 0;
 				return -1;
 			}
-
-			fd_io->out = file_fd;
-
-			// pid_t	pid;
-
-			// if ((pid = fork()) == -1)
-			// 	ft_err_erno(errno, TRUE);
-
-			// if (pid == CHILD_PROCESS_PID)
-			// {
-
-			// }
-			// else
-			// {
-
-			// }
-		}
-		else if (ft_strequ(redir_type, "<") || ft_strequ(redir_type, "<<"))
-		{
-
+			else
+			{
+				if (fd1 >= 0)
+				{
+					to_dup.fd = file_fd;
+					to_dup.default_fd = fd1;
+					ft_lstadd(&fd_io->other, ft_lstnew(&to_dup, sizeof(to_dup)));
+				}
+				else
+				{
+					if (ft_strequ(redir_type, "<"))
+						fd_io->in = file_fd;
+					else
+						fd_io->out = file_fd;
+				}
+				ft_lstadd(fds_to_close, ft_lstnew(&file_fd, sizeof(file_fd)));
+			}
 		}
 		else
 		{
-
+			ft_error(FALSE,
+				"%s: %s: invalid redirection\n", g_proj_name, redir_type);
 		}
 
-		free(next_word_str);
+		ft_memdel((void**)&next_word_str);
 	}
 	else if (regex_mini_match(REG_CLOSE_FD_, redir_str))
 	{
@@ -280,7 +268,8 @@ static void		process_file_redirs_(
 					t_input_output *fd_io,
 					const t_lst_words *words,
 					int fd_in,
-					const int *pipe_fd)
+					const int *pipe_fd,
+					t_list **fds_to_close)
 {
 	t_lst_inkey	*word_keys;
 	t_str		word_str;
@@ -293,7 +282,7 @@ static void		process_file_redirs_(
 			ft_err_mem(TRUE);
 
 		if (regex_mini_match(REG_ALL_3_REDIRS_, word_str))
-			process_redir_to_file_(fd_io, word_str, words->next, NULL);
+			process_redir_to_file_(fd_io, word_str, words->next, fds_to_close);
 		
 		free(word_str);
 	}
@@ -303,16 +292,25 @@ void			process_redirections(
 					t_input_output *fd_io,
 					const t_grps_wrds *pipe_queue,
 					int *fd_in,
-					int *pipe_fd)
+					int *pipe_fd,
+					t_list **fds_to_close)
 {
 	fd_io->other = NULL;
 	if (pipe(pipe_fd) == -1)
 		ft_err_erno(errno, TRUE);
 
 	process_pipe_redirs_(fd_io, pipe_queue, *fd_in, pipe_fd);
-	process_file_redirs_(fd_io, LCONT(pipe_queue, t_lst_words*), *fd_in, pipe_fd);
+	process_file_redirs_(fd_io, LCONT(pipe_queue, t_lst_words*),
+		*fd_in, pipe_fd, fds_to_close);
 
 	*fd_in = pipe_fd[g_read_end_];
+}
+
+static void		close_lst_of_fds_(t_list *fds_to_close)
+{
+	for (; fds_to_close; LTONEXT(fds_to_close))
+		close(*LCONT(fds_to_close, int*));
+	errno = 0;
 }
 
 #define PIPE_DELIM_ "(\\||\\|&)"
@@ -329,6 +327,7 @@ void	process_pipe_queue(
 	int				in;
 	int				i;
 	int				cmd_count;
+	t_list			*fds_to_close;
 
 	cmd_count = ft_lstlen(pipe_queue);
 	fd = malloc(sizeof(int) * cmd_count * 2);
@@ -336,6 +335,7 @@ void	process_pipe_queue(
 	for (i = 0; i < cmd_count * 2; i++)
 		fd[i] = -1;
 
+	fds_to_close = NULL;
 	in = 0;
 	for (i = 0; pipe_queue; LTONEXT(pipe_queue), i++)
 	{
@@ -348,13 +348,14 @@ void	process_pipe_queue(
 		// for (int j = 0; argv[j]; j++)
 		// 	ft_printf(":%s:\n", argv[j]);
 
-		process_redirections(&fd_io, pipe_queue, &in, fd + i * 2);
+		process_redirections(&fd_io, pipe_queue, &in, fd + i * 2, &fds_to_close);
 		process_argv(fd_io, argv, shvars, built_in_cmds);
 
 		if (close(fd[i * 2 + g_write_end_]) != 0)
 			ft_err_erno(errno, TRUE);
 
 		ft_free_bidimens(argv);
+		ft_lstdel(&fd_io.other, &std_mem_del);
 	}
 
 	// It's ok if it didn't wait for anything.
@@ -364,6 +365,9 @@ void	process_pipe_queue(
 		errno = 0;
 	else
 		ft_err_erno(errno, TRUE);
+
+	close_lst_of_fds_(fds_to_close);
+	ft_lstdel(&fds_to_close, &std_mem_del);
 
 	for (i = 0; i < cmd_count; i++)
 		if (fd[i * 2 + g_read_end_] != -1 && close(fd[i * 2 + g_read_end_]) != 0)

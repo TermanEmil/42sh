@@ -119,7 +119,12 @@ t_str				find_cmd_in_env_path(t_rostr cmd, const t_shvars *shvars);
 t_exec_cmd_f		*get_sh_builtin_f(t_rostr cmd,
 						const t_hashtab *built_in_cmds);
 pid_t				execute_cmd(t_input_output fd_io, t_rostr cmd_path,
-						const t_str *argv, t_shvars *shvars);
+						const t_str *argv, const t_shvars *shvars);
+void				execute_built_in(
+						t_input_output fd_io,
+						t_exec_cmd_f *exec_cmd_f,
+						const t_str *argv,
+						t_shvars *shvars);
 /*
 ** Utils
 */

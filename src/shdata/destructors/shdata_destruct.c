@@ -9,5 +9,9 @@ void		shdata_destruct(t_shdata * const target)
 		shvars_destroy(&target->shvars);
 		del_hashtab(&target->built_in_cmds);
 		del_hashtab(&g_shinput->key_cmds);
+		
+		close(STDIN_FILENO);
+		close(STDOUT_FILENO);
+		close(STDERR_FILENO);
 	}
 }
