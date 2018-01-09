@@ -65,6 +65,9 @@ typedef struct			s_pipe_env
 
 void		execute_cmd_exit();
 int			execute_cmd_cd(t_cmd_env *cmd_env);
+int			execute_cmd_env(t_cmd_env *cmd_env);
+int			execute_cmd_setenv(t_cmd_env *cmd_env);
+int			execute_cmd_unsetenv(t_cmd_env *cmd_env);
 int			execute_cmd_set_local_var(t_cmd_env *cmd_env);
 
 /*

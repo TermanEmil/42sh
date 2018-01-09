@@ -15,5 +15,8 @@ t_hashtab		*init_built_in_cmds_htab()
 	htab = new_hashtab(16, NULL, NULL);
 	add_cmd_(htab, "exit", (t_exec_cmd_f*)&execute_cmd_exit);
 	add_cmd_(htab, "cd", &execute_cmd_cd);
+	add_cmd_(htab, "env", &execute_cmd_env);
+	add_cmd_(htab, "setenv", &execute_cmd_setenv);
+	add_cmd_(htab, "unsetenv", &execute_cmd_unsetenv);
 	return htab;
 }

@@ -98,3 +98,57 @@ int				execute_cmd_cd(t_cmd_env *cmd_env)
 		ret = cd_to_dir_(cmd_env->argv[1], cmd_env->shvars);
 	return ret;
 }
+
+int				execute_cmd_env(t_cmd_env *cmd_env)
+{
+	t_str	*env_tab;
+	int		i;
+
+	env_tab = shvars_form_key_val_tab(cmd_env->shvars->env);
+	for (i = 0; env_tab[i]; i++)
+		ft_putendl(env_tab[i]);
+	ft_free_bidimens(env_tab);
+	return 0;
+}
+
+int				execute_cmd_setenv(t_cmd_env *cmd_env)
+{
+	const t_str	*argv;
+
+	argv = cmd_env->argv;
+	if (argv[1] == NULL)
+	{
+		ft_error(FALSE, "%s: setenv: Invalid parameters\n", g_proj_name);
+		return -1;
+	}
+	htab_set_pair(cmd_env->shvars->env, new_hashpair(
+		new_hashmem_str(argv[1]),
+		new_hashmem_str((argv[2] == NULL) ? "" : argv[2])));
+	if (errno)
+	{
+		ft_err_erno(errno, FALSE);
+		errno = 0;
+		return -1;
+	}
+	return 0;
+}
+
+int				execute_cmd_unsetenv(t_cmd_env *cmd_env)
+{
+	const t_str	*argv;
+
+	argv = cmd_env->argv;
+	if (argv[1] == NULL)
+	{
+		ft_error(FALSE, "%s: unsetenv: Invalid parameters\n", g_proj_name);
+		return -1;
+	}
+	htab_remove(cmd_env->shvars->env, new_hashmem_str(argv[1]));
+	if (errno)
+	{
+		ft_err_erno(errno, FALSE);
+		errno = 0;
+		return -1;
+	}
+	return 0;
+}
