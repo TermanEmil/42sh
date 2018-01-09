@@ -13,10 +13,13 @@ t_current_input	*g_current_in;
 int		main(int argc, const char **argv, const char **envp)
 {
 	init_shell(envp);
-	
-	ft_putstr("42sh shell by eterman");
-	term_putnewl();
-	input_reprint_here(g_current_in);
+
+	if (g_shdata.is_term)
+	{
+		ft_putstr("42sh shell by eterman");	
+		term_putnewl();
+		input_reprint_here(g_current_in);
+	}
 
 	while (1)
 	{
@@ -24,5 +27,6 @@ int		main(int argc, const char **argv, const char **envp)
 		shell_read_user_input();
 		shinput_process_signals(g_shinput);
 	}
+
 	event_exit(0);
 }

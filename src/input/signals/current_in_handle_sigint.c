@@ -5,7 +5,7 @@ void	current_in_handle_sigint(t_shinput * const shinput)
 	if (!shinput->signaled_sigint)
 		return;
 
-	ft_putstr("^C");
+	IF_TERM(ft_putstr("^C"));
 
 	current_in_resset(&shinput->current, TRUE);
 	shinput->current.line_index = 0;
@@ -16,6 +16,11 @@ void	current_in_handle_sigint(t_shinput * const shinput)
 
 	ft_strcpy(g_shdata.prompt, DEFAULT_PROMPT);
 
-	term_putnewl();
-	input_reprint_here(&shinput->current);
+	if (g_shdata.is_term)
+	{
+		term_putnewl();
+		input_reprint_here(&shinput->current);
+	}
+	else
+		event_exit(0);
 }

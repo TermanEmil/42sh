@@ -66,7 +66,7 @@ int		key_cmd_enter(void)
 	int				ret;
 	t_lst_inkey		*keys;
 
-	input_reprint(g_current_in);
+	IF_TERM(input_reprint(g_current_in));
 
 	keys = current_in_all_lines_to_lst(g_current_in, &g_shinput->history);
 	ret = assign_what_are_insideof(keys);
@@ -74,10 +74,10 @@ int		key_cmd_enter(void)
 	if (process_bracket_completion(ret) == 0)
 		process_shell_input(keys, &g_shdata.shvars, g_shdata.built_in_cmds);
 	else
-		ft_putnewl();
+		IF_TERM(ft_putnewl());
 	
 	input_mv_current_in_to_history(g_shinput);
-	input_reprint_here(g_current_in);
+	IF_TERM(input_reprint_here(g_current_in));
 
 	ft_lstdel(&keys, NULL);
 	return (0);

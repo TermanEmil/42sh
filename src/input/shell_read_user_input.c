@@ -30,17 +30,17 @@ static inline void			uinput_insert_seq(t_shinput_seq seq)
 		return;
 
 	input_seq_insert_seq(g_current_in->input, g_current_in->cursor_pos, &seq);
-	term_cursor_off();
+	IF_TERM(term_cursor_off());
 
 	final_pos = g_current_in->cursor_pos + seq.count;
 	g_current_in->cursor_pos = final_pos - 1;
 
-	uinput_print_seq(seq.count);
-	input_reprint(g_current_in);
+	IF_TERM(uinput_print_seq(seq.count));
+	IF_TERM(input_reprint(g_current_in));
 
 	g_current_in->cursor_pos = final_pos;
 
-	term_cursor_on();
+	IF_TERM(term_cursor_on());
 }
 
 /*
@@ -106,16 +106,13 @@ static void				shell_process_ctrl_d()
 {
 	if (ft_lstlen(g_current_in->input->keys) == 0)
 	{
-		ft_putstr("exit");
-		term_putnewl();
+		IF_TERM(ft_putstr("exit"));
+		IF_TERM(term_putnewl());
 		event_exit(0);
 	}
 }
 
 /*
-cmd1
-cmd2
-c
 ** Still has plenty of bugs...
 */
 

@@ -16,6 +16,17 @@
 
 # define DEFAULT_PROMPT "[42sh]$>"
 
+# define IF_TERM(cmd)				\
+	if (g_shdata.is_term)			\
+		cmd;						\
+
+# define IF_TERM2(cmd1, cmd2)		\
+	if (g_shdata.is_term)			\
+		cmd1;						\
+	else							\
+		cmd2;						\
+
+
 typedef struct s_shdata			t_shdata;
 
 extern t_shdata		g_shdata;
@@ -27,7 +38,10 @@ struct				s_shdata
 	t_shvars		shvars;
 	t_hashtab		*built_in_cmds;
 	t_bool			running_a_process;
+	t_bool			is_term;
 };
+
+void				read_process_non_term_input();
 
 /*
 ** shdata: get, set

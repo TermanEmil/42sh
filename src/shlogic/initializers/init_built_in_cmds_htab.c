@@ -17,6 +17,7 @@ t_hashtab		*init_built_in_cmds_htab()
 	add_cmd_(htab, "cd", &execute_cmd_cd);
 	add_cmd_(htab, "env", &execute_cmd_env);
 	add_cmd_(htab, "setenv", &execute_cmd_setenv);
+	add_cmd_(htab, "export", &execute_cmd_setenv);
 	add_cmd_(htab, "unsetenv", &execute_cmd_unsetenv);
 	return htab;
 }

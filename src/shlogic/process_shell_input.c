@@ -1,5 +1,6 @@
 #include "shlogic.h"
 #include "shell_redirs_.h"
+#include "shell42.h"
 
 void	process_cmds(
 			t_grps_wrds *cmd_queue,
@@ -36,11 +37,13 @@ void	process_shell_input(
 	process_dollar_values(words, shvars);
 	proceess_tilde(words, shvars);
 
-	term_restore(&term_get_data()->old_term);
-	ft_putnewl();
+	IF_TERM(term_restore(&term_get_data()->old_term));
+	IF_TERM(ft_putnewl());
+
 	cmd_queue = group_words_by_delim(words, ";");
 	process_cmds(cmd_queue, shvars, built_in_cmds);
-	term_enable_raw_mode(term_get_data());
+	
+	IF_TERM(term_enable_raw_mode(term_get_data()));
 
 	del_groups_of_words(cmd_queue);
 	del_lst_of_words(words);

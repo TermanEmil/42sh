@@ -12,11 +12,19 @@ static inline void	init_global_links(void)
 void	init_shell(const char **envp)
 {
 	g_shdata = shdata_construct();
-	init_global_links();
-	term_setup(getenv("TERM"), term_get_data());
-	term_make_termcap_keys_work();
-	g_shdata.input.term_tty = term_get_current_tty();
 
+	g_shdata.is_term = isatty(STDOUT_FILENO);
+	errno = 0;
+
+	init_global_links();
+
+	if (g_shdata.is_term)
+	{
+		term_setup(getenv("TERM"), term_get_data());	
+		term_make_termcap_keys_work();
+		g_shdata.input.term_tty = term_get_current_tty();
+	}
+	
 	g_shdata.shvars = shvars_construct(envp);
 	g_shdata.built_in_cmds = init_built_in_cmds_htab();
 	shell_init_key_cmds_htab();
