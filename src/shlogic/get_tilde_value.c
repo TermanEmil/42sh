@@ -26,7 +26,7 @@ t_str			get_tilde_value(
 	}
 	else
 	{
-		buf_passwd = getpwnam(tilde_prefix);
+		INTERPT_RETRY(buf_passwd = getpwnam(tilde_prefix));
 		if (buf_passwd == NULL)
 			result = NULL;
 		else

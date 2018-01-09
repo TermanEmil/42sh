@@ -26,6 +26,7 @@ struct				s_shdata
 	t_shinput		input;
 	t_shvars		shvars;
 	t_hashtab		*built_in_cmds;
+	t_bool			running_a_process;
 };
 
 /*

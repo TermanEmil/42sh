@@ -1,6 +1,5 @@
 #include "shell_redirs_.h"
 #include "regex_tools.h"
-#include <fcntl.h>
 
 #define REG_ALL_3_REDIRS_	"("							\
 								REG_TO_FILE_REDIR "|"	\

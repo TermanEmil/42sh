@@ -1,59 +1,11 @@
 #include "shell_redirs_.h"
-#include "shlogic.h"
-#include "regex_tools.h"
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-
-pid_t	process_argv(
-			t_pipe_env *pipe_env,
-			t_cmd_env *cmd_env)
-{
-	t_str			cmd_path;
-	t_exec_cmd_f	*exec_cmd_f;
-	pid_t			ret;
-
-	if (cmd_env->argv[0] != NULL && cmd_is_set_var(cmd_env->argv[0]))
-	{
-		execute_cmd_set_local_var(cmd_env);
-		return 0;
-	}
-	else if ((exec_cmd_f = get_sh_builtin_f(cmd_env->argv[0], pipe_env->built_in_cmds)))
-	{
-		execute_built_in(cmd_env, exec_cmd_f);
-		return 0;
-	}
-	else if (cmd_is_specific_program(cmd_env->argv[0]))
-		return execute_cmd(cmd_env, cmd_env->argv[0]);
-	else if ((cmd_path = find_cmd_in_env_path(cmd_env->argv[0], pipe_env->shvars)))
-	{
-		ret = execute_cmd(cmd_env, cmd_path);
-		free(cmd_path);
-		return ret;
-	}
-
-	ft_error(FALSE, "%s: command not found\n", cmd_env->argv[0]);
-	return -1;
-}
-
-t_bool	word_is_valid_redirection(const t_lst_inkey* in_keys)
-{
-	t_str	tmp;
-	t_bool	condition;
-
-	tmp = word_to_str(in_keys);
-	if (tmp == NULL)
-		ft_err_mem(TRUE);
-	condition = ft_strnchr(tmp, "><") && !ft_strnchr(tmp, "\"\'\\`()[]{}");	
-	free(tmp);
-	return condition;
-}
+#include "shell42.h"
 
 /*
 ** Extract all args from the given list of words until it finds a redirection.
 */
 
-t_str	*extract_argv(const t_lst_words *words)
+static t_str	*extract_argv_(const t_lst_words *words)
 {
 	t_str	*argv;
 	t_str	tmp;
@@ -79,44 +31,94 @@ t_str	*extract_argv(const t_lst_words *words)
 	return argv;
 }
 
-static void	process_pipe_queue_iter_(
-				t_pipe_env *pipe_env,
-				const t_grps_wrds *queue_iter,
-				int *pipe_fd)
+/*
+** Process all redirections of a pipe cmd, that is: pipe-ing, redirection to
+** file or closing a fd. Here the cmd_env-s are created.
+*/
+
+static void		process_all_redirs_(
+					t_pipe_env *pipe_env,
+					const t_grps_wrds *queue_iter,
+					int *pipe_fd,
+					t_list **cmd_envs)
 {
-	t_cmd_env			cmd_env;
-	t_str				*argv;
+	t_cmd_env	cmd_env;
+	t_str		*argv;
 
 	if (words_match_single(LCONT(queue_iter, t_lst_words*), PIPE_DELIM))
 		return;
 
-	argv = extract_argv(LCONT(queue_iter, t_lst_words*));
+	argv = extract_argv_(LCONT(queue_iter, t_lst_words*));
 	cmd_env = new_cmd_env(argv, queue_iter, pipe_env->shvars, pipe_fd);
 
 	process_redirections(pipe_env, &cmd_env);
-	if (pipe_env->success)
-		process_argv(pipe_env, &cmd_env);
-
-	if (close(cmd_env.piped_fds[PIPE_WRITE_END]) != 0)
-		ft_err_erno(errno, TRUE);
-
-	ft_free_bidimens(argv);
-	ft_lstdel(&cmd_env.fd_io.other, &std_mem_del);
+	ft_lstadd(cmd_envs, ft_lstnew(&cmd_env, sizeof(cmd_env)));
 }
 
-void	process_pipe_queue(t_pipe_env pipe_env)
+/*
+** Execute the arguments, closing the writing end of the pipe (important).
+*/
+
+static void		execute_argvs_of_cmd_envs_(
+					t_pipe_env *pipe_env,
+					t_list *cmd_envs)
+{
+	t_cmd_env	*cmd_env;
+
+	for (; cmd_envs; LTONEXT(cmd_envs))
+	{
+		cmd_env = LCONT(cmd_envs, t_cmd_env*);
+		if (cmd_env->success)
+			process_argv(pipe_env, cmd_env);
+
+		if (TMP_FAIL_RETRY(close(cmd_env->piped_fds[PIPE_WRITE_END])) != 0)
+			ft_err_erno(errno, TRUE);
+	}
+}
+
+/*
+** pipe_env, cmd_env and redir_env are used to move data across functions and
+** to keep the code intuitive.
+**
+** First, an array of integers for pipe-ing is created, so that the unecessary
+** fd-s can be closed later.
+**
+** Then, a list of cmd_envs is created. Each pipe cmd (cmd1 | cmd2 ||| cmd3...)
+** is processed, meaning that the necessary t_input_output structure (fd_io)
+** inside cmd_env will be set, meaning that firstly, the necessary piping and
+** file creation (for redirection) is created.
+**
+** Finally, each cmd_env is executed.
+**
+** To keept stuff simplier, pipe_env shares a list of integers: fds_to_close.
+** This list stores all extra fd-s that appear during processing, for example
+** when the output is redirected to a file, that fd is stored here.
+**
+** process_pipe_queue -> process_all_redirs_ -> process_redirections ->
+** {
+**  process_pipe_redirs -> ...
+**  process_all_guillemet_redirs -> process_guillemet_redir -> ...
+** }
+*/
+
+void			process_pipe_queue(t_pipe_env pipe_env)
 {
 	const t_grps_wrds	*queue_iter;
 	int					*fd;
 	int					i;
+	t_list				*cmd_envs;
 
 	fd = new_fd_tab_for_piping(pipe_env.cmd_count * 2);
 
 	queue_iter = pipe_env.pipe_queue;
-	for (i = 0; queue_iter; LTONEXT(queue_iter), i++)
-		process_pipe_queue_iter_(&pipe_env, queue_iter, fd + i * 2);
+	for (i = 0, cmd_envs = NULL; queue_iter; LTONEXT(queue_iter), i++)
+		process_all_redirs_(&pipe_env, queue_iter, fd + i * 2, &cmd_envs);
+	execute_argvs_of_cmd_envs_(&pipe_env, cmd_envs);
+
+	ft_lstdel(&cmd_envs, (t_ldel_func*)&del_cmd_env);
 
 	wait_for_all_children_to_die_muhaha();
+	g_shdata.running_a_process = FALSE;
 	close_all_fds(pipe_env.fds_to_close, fd, pipe_env.cmd_count);
 	
 	ft_lstdel(&pipe_env.fds_to_close, &std_mem_del);

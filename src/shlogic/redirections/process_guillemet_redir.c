@@ -24,7 +24,9 @@ void		process_guillemet_redir(
 		process_guillemet_redir_to_from_file(pipe_env, cmd_env, &redir_env);
 	else
 	{
-		pipe_env->success = FALSE;
+		cmd_env->success = FALSE;
+		ft_error(FALSE, "%s: %s: invalid redirection\n",
+			g_proj_name, redir_str);
 		return;
 	}
 

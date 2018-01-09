@@ -56,7 +56,7 @@ static inline void	process_when_cursor_in_margin(int const x, int const y)
 		else
 			ft_putstr(" ");
 		term_cursor_goto(0, y + 1);
-		term_del_char();
+		INTERPT_RETRY(term_del_char());
 	}
 }
 
@@ -93,17 +93,17 @@ void					uinput_print_seq(size_t const seq_len)
 	{
 		x = 0;
 		y++;
-		ft_putstr(" ");
+		INTERPT_RETRY(ft_putstr(" "));
 	}
 
 	term_cursor_goto(x, y);
-	ft_putstr(disp);
+	INTERPT_RETRY(ft_putstr(disp));
 	
 	if (term_will_add_new_line(x, y))
 		y--;
 
 	term_cursor_goto(x, y);
-	ft_putstr(seq_disp);
+	INTERPT_RETRY(ft_putstr(seq_disp));
 	process_when_cursor_in_margin(x, y);
 	free(disp);
 	free(seq_disp);

@@ -28,7 +28,7 @@ static inline int	process_delim(t_bool * const first_is_delim,
 static inline void	custom_input_reprint(int const x, int const y,
 						ssize_t const cursor_pos)
 {
-	term_cursor_goto(x, y);
+	INTERPT_RETRY(term_cursor_goto(x, y));
 	g_current_in->cursor_pos = cursor_pos - 1;
 	input_reprint(g_current_in);
 	g_current_in->cursor_pos = cursor_pos;

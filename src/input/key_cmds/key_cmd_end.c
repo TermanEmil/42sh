@@ -15,7 +15,7 @@ int		key_cmd_end(void)
 		g_current_in->cursor_pos++;
 		LTONEXT(lst_key);
 	}
-	term_cursor_goto(len, y);
+	INTERPT_RETRY(term_cursor_goto(len, y));
 	g_current_in->cursor_pos--;
 	input_reprint(g_current_in);
 	g_current_in->cursor_pos++;

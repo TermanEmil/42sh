@@ -9,6 +9,7 @@ static int			move_to_previos_in_key(int * const x, int * const y,
 	{
 		*x = (term_get_width() - 1) - *x;
 		*y -= 1;
+		errno = 0;
 		if (*y < 0)
 			return (-1);
 	}
@@ -33,7 +34,7 @@ static inline int	process_delim(int * const first_is_delim,
 static inline void	custom_input_reprint(int const x, int const y,
 						ssize_t const cursor_pos)
 {
-	term_cursor_goto(x, y);
+	INTERPT_RETRY(term_cursor_goto(x, y));
 	g_current_in->cursor_pos = cursor_pos - 1;
 	input_reprint(g_current_in);
 	g_current_in->cursor_pos = cursor_pos + 1;

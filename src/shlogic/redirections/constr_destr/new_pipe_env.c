@@ -14,6 +14,5 @@ t_pipe_env	new_pipe_env(
 	result.current_pipe_input_fd = STDIN_FILENO;
 	result.cmd_count = ft_lstlen(pipe_queue);
 	result.fds_to_close = NULL;
-	result.success = TRUE;
 	return result;
 }

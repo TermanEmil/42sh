@@ -20,7 +20,12 @@ typedef struct		s_redir_env
 	t_str			next_word_str;
 }					t_redir_env;
 
+/*
+** Public.
+*/
+
 void	process_pipe_queue(t_pipe_env pipe_env);
+pid_t	process_argv(t_pipe_env *pipe_env, t_cmd_env *cmd_env);
 
 /*
 ** The actual redirs.
@@ -45,25 +50,19 @@ int		*new_fd_tab_for_piping(int size);
 void	wait_for_all_children_to_die_muhaha();
 void	close_all_fds(
 			const t_lst_int *fds_to_close, const int *fd, int cmd_count);
+t_bool	word_is_valid_redirection(const t_lst_inkey* in_keys);
 
 /*
-** Constructors
+** Constructors & destructors
 */
 
-t_pipe_env			new_pipe_env(
-						const t_grps_wrds *pipe_queue,
-						const t_hashtab *built_in_cmds,
-						t_shvars *shvars);
-
-t_cmd_env			new_cmd_env(
-						const t_str *argv,
-						const t_grps_wrds *pipe_queue_iter,
-						t_shvars *shvars,
-						int *piped_fds);
-
-t_to_dup			new_to_dup(int fd, int default_fd, t_bool to_close);
-
-t_redir_env			new_redir_env(t_rostr redir, t_lst_words *next_words);
-void				del_redir_env(t_redir_env *redir_env);
+t_pipe_env	new_pipe_env(const t_grps_wrds *pipe_queue,
+				const t_hashtab *built_in_cmds, t_shvars *shvars);
+t_cmd_env	new_cmd_env(t_str *argv, const t_grps_wrds *pipe_queue_iter,
+				t_shvars *shvars, int *piped_fds);
+void		del_cmd_env(t_cmd_env *cmd_env);
+t_to_dup	new_to_dup(int fd, int default_fd, t_bool to_close);
+t_redir_env	new_redir_env(t_rostr redir, t_lst_words *next_words);
+void		del_redir_env(t_redir_env *redir_env);
 
 #endif

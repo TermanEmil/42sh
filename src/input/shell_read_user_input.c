@@ -30,7 +30,6 @@ static inline void			uinput_insert_seq(t_shinput_seq seq)
 		return;
 
 	input_seq_insert_seq(g_current_in->input, g_current_in->cursor_pos, &seq);
-
 	term_cursor_off();
 
 	final_pos = g_current_in->cursor_pos + seq.count;
@@ -81,21 +80,42 @@ static inline t_shinput_seq	uinput_mince_raw(char const *raw_in)
 	t_hashpair const	*cmd_hpair;
 
 	seq = shinput_seq_construct();
-	while (*raw_in)
-	{
+	while (*raw_in && !g_shinput->signaled_sigint)
+	{		
 		cmd_hpair = shell_get_key_cmd(raw_in);
 		if (cmd_hpair != NULL)
 		{
+			if (seq.count > 0)
+			{
+				uinput_insert_seq(seq);
+				seq.keys = NULL;
+				seq.count = 0;
+			}
 			CAST(cmd_hpair->val.mem, t_key_cmd_f*)();
 			raw_in += ft_strlen(cmd_hpair->key.mem);
 		}
 		else
 			process_raw_as_normal_input(&raw_in, &seq);
 	}
+	if (seq.count > 0)
+		uinput_insert_seq(seq);
 	return (seq);
 }
 
+static void				shell_process_ctrl_d()
+{
+	if (ft_lstlen(g_current_in->input->keys) == 0)
+	{
+		ft_putstr("exit");
+		term_putnewl();
+		event_exit(0);
+	}
+}
+
 /*
+cmd1
+cmd2
+c
 ** Still has plenty of bugs...
 */
 
@@ -105,6 +125,9 @@ void					shell_read_user_input(void)
 
 	if (raw_in == NULL)
 		return;
+	if (raw_in[0] == EOF)
+		shell_process_ctrl_d();
 
-	uinput_insert_seq(uinput_mince_raw(raw_in));
+	// uinput_insert_seq(uinput_mince_raw(raw_in));
+	uinput_mince_raw(raw_in);
 }

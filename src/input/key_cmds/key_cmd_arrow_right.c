@@ -13,10 +13,10 @@ int		key_cmd_arrow_right(void)
 	{
 		if (x >= width - 1)
 		{
-			term_cursor_goto(0, y + 1);
+			INTERPT_RETRY(term_cursor_goto(0, y + 1));
 		}
 		else
-			term_cursor_goto(x + 1, y);
+			INTERPT_RETRY(term_cursor_goto(x + 1, y));
 	}
 	g_current_in->cursor_pos--;
 	input_reprint(g_current_in);

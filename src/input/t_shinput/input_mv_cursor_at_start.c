@@ -44,4 +44,5 @@ void	input_mv_cursor_at_start(t_current_input * const current_in)
 		LTOPREV(lst_key);
 	}
 	custom_input_reprint(x, y, cursor_pos, current_in);
+	errno = 0;
 }

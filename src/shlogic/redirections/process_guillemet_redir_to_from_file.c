@@ -2,7 +2,7 @@
 #include "regex_tools.h"
 #include <fcntl.h>
 
-void		assign_default_left_redir_value_(
+static void	assign_default_left_redir_value_(
 				int dest_fd,
 				t_cmd_env *cmd_env,
 				const t_redir_env *redir_env)
@@ -13,9 +13,10 @@ void		assign_default_left_redir_value_(
 		cmd_env->fd_io.out = dest_fd;
 }
 
-int			get_open_flags_(const t_redir_env *redir_env)
+static int	open_redir_file_(const t_redir_env *redir_env)
 {
 	int		open_flags;
+	int		fd;
 
 	if (ft_strchr(redir_env->redir_type, '>'))
 	{
@@ -27,10 +28,15 @@ int			get_open_flags_(const t_redir_env *redir_env)
 	}
 	else
 		open_flags = O_RDONLY;
-	return open_flags;
+	
+	fd = TMP_FAIL_RETRY(open(redir_env->next_word_str, open_flags, 0644));
+	return fd;
 }
 
-int			get_destination_fd_(t_pipe_env *pipe_env, t_redir_env *redir_env)
+static int	get_destination_fd_(
+				t_pipe_env *pipe_env,
+				t_cmd_env *cmd_env,
+				t_redir_env *redir_env)
 {
 	int		dest_fd;
 
@@ -42,17 +48,17 @@ int			get_destination_fd_(t_pipe_env *pipe_env, t_redir_env *redir_env)
 		ft_error(FALSE, "%s: %s: %s\n",
 			g_proj_name, redir_env->redir, "No file specified");
 		errno = 0;
-		pipe_env->success = FALSE;
+		cmd_env->success = FALSE;
 		return -1;
 	}
 
-	dest_fd = open(redir_env->next_word_str, get_open_flags_(redir_env), 0644);
+	dest_fd = open_redir_file_(redir_env);
 	if (dest_fd == -1)
 	{
 		ft_error(FALSE, "%s: %s: %s\n",
 			g_proj_name, redir_env->next_word_str, strerror(errno));
 		errno = 0;
-		pipe_env->success = FALSE;
+		cmd_env->success = FALSE;
 		return -1;
 	}
 	return dest_fd;
@@ -70,11 +76,11 @@ void		process_guillemet_redir_to_from_file(
 	{
 		ft_error(FALSE, "%s: %s: invalid redirection\n",
 			g_proj_name, redir_env->redir);
-		pipe_env->success = FALSE;
+		cmd_env->success = FALSE;
 		return;
 	}
 
-	if ((dest_fd = get_destination_fd_(pipe_env, redir_env)) == -1)
+	if ((dest_fd = get_destination_fd_(pipe_env, cmd_env, redir_env)) == -1)
 		return;
 	
 	if (redir_env->left_fd >= 0)
@@ -86,5 +92,5 @@ void		process_guillemet_redir_to_from_file(
 		assign_default_left_redir_value_(dest_fd, cmd_env, redir_env);
 
 	if (redir_env->right_fd < 0)
-		ft_lstadd(&pipe_env->fds_to_close, ft_lstnew(&dest_fd, sizeof(dest_fd)));
+		ft_lstadd(&pipe_env->fds_to_close, ft_lstnew(&dest_fd, sizeof(int)));
 }

@@ -61,20 +61,6 @@ static inline int	process_bracket_completion(int assign_what_are_insideof_ret)
 	return 1;
 }
 
-void	shlogic_exec(t_lst_words *words)
-{
-	//- Divide in subcommands: ; | > >> < <<
-
-	//-	Process dollar values
-	//-	Process tilda value ~
-
-	//-	Find what command it is:
-	//		is it setting a var?~
-	//		is it referring to a specific pointed program?
-	//		is it a built in cmd?
-	//		is it a program from PATH?
-}
-
 int		key_cmd_enter(void)
 {
 	int				ret;
@@ -87,10 +73,10 @@ int		key_cmd_enter(void)
 
 	if (process_bracket_completion(ret) == 0)
 		process_shell_input(keys, &g_shdata.shvars, g_shdata.built_in_cmds);
-
+	else
+		ft_putnewl();
+	
 	input_mv_current_in_to_history(g_shinput);
-	// term_putnewl();
-	// term_getch();
 	input_reprint_here(g_current_in);
 
 	ft_lstdel(&keys, NULL);

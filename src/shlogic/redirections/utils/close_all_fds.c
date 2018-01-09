@@ -2,7 +2,7 @@
 
 static void	close_fd_lst_element_(const t_list *lst_fd)
 {
-	close(*LCONT(lst_fd, int*));
+	TMP_FAIL_RETRY(close(*LCONT(lst_fd, int*)));
 	errno = 0;
 }
 
@@ -15,7 +15,7 @@ void		close_all_fds(
 	for (i = 0; i < cmd_count; i++)
 	{
 		if (fd[i * 2 + PIPE_READ_END] != -1)
-			close(fd[i * 2 + PIPE_READ_END]);
+			TMP_FAIL_RETRY(close(fd[i * 2 + PIPE_READ_END]));
 		errno = 0;
 	}
 }

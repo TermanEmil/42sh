@@ -59,6 +59,36 @@
 #  define FALSE 0
 # endif
 
+# define TMP_FAIL_RETRY(expression)											\
+	(__extension__															\
+		({																	\
+			long int __result;												\
+																			\
+			do																\
+			{																\
+				if (errno == EINTR)											\
+					errno = 0;												\
+				__result = (long int)(expression);							\
+			}																\
+			while (__result == -1L && errno == EINTR);						\
+			__result;														\
+		})																	\
+	)																		\
+
+# define INTERPT_RETRY(expression)											\
+	(__extension__															\
+		({																	\
+			do																\
+			{																\
+				if (errno == EINTR)											\
+					errno = 0;												\
+				expression;													\
+			}																\
+			while (errno == EINTR);											\
+																			\
+		})																	\
+	)																		\
+
 typedef int				t_bool;
 typedef char			*t_str;
 typedef char const	 	*t_rostr;
