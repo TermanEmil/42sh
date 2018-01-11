@@ -1,0 +1,5 @@
+1) Inhibitors
+2) Sub shells using the "()" operators. (not entirely perfect...)
+3) Local variables and unset and export builtins
+4) Line edition as it’s required in the 21sh project.
+5) Dynamic autocompletion. (slow...)
