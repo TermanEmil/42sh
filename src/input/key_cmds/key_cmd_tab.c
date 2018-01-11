@@ -145,6 +145,8 @@ void	process_single_match_(t_rostr first_word, t_rostr match)
 {
 	t_shinput_seq	seq;
 
+	if (ft_strlen(match + ft_strlen(first_word)) == 0)
+		return;
 	seq.keys = get_sh_inkeys_from_str(match + ft_strlen(first_word));
 	seq.count = ft_lstlen(seq.keys);
 	input_seq_insert_seq(g_current_in->input, g_current_in->cursor_pos, &seq);
