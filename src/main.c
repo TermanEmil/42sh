@@ -24,7 +24,13 @@ int		main(int argc, const char **argv, const char **envp)
 	while (1)
 	{
 		shinput_reset_signals(g_shinput);
-		shell_read_user_input();
+		if (g_shdata.sub_sh != NULL)
+		{
+			uinput_mince_raw(g_shdata.sub_sh->raw_cmd);
+			event_exit(0);
+		}
+		else
+			shell_read_user_input();
 		shinput_process_signals(g_shinput);
 	}
 

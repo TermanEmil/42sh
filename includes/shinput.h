@@ -156,6 +156,7 @@ int					key_cmd_ctrl_arrow_left(void);
 int					key_cmd_ctrl_arrow_right(void);
 int					key_cmd_alt_up(void);
 int					key_cmd_alt_down(void);
+int					key_cmd_tab(void);
 
 /*
 ** ** Enter
@@ -299,6 +300,7 @@ void				shinput_process_signals(t_shinput *shinput);
 */
 
 char const			*shell_read_user_input_key(void);
+t_shinput_seq		uinput_mince_raw(char const *raw_in);
 
 /*
 ** Utils

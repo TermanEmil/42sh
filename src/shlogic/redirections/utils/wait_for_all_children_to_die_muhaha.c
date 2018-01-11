@@ -10,7 +10,14 @@
 
 void	wait_for_all_children_to_die_muhaha()
 {
-	while (waitpid(-1, NULL, 0) > 0 && !g_shinput->signaled_sigint);
+	pid_t	pid;
+
+	// ft_printf("\tstarted waiting\n");
+	while ((pid = waitpid(-1, NULL, 0)) > 0 && !g_shinput->signaled_sigint)
+	{
+		// ft_printf("{red}waited for %d\n", pid);
+	}
+	// ft_printf("\tended waiting\n");
 
 	if (errno)
 	{

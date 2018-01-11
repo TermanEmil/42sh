@@ -1,6 +1,8 @@
 #include "shlogic.h"
 #include "shell_redirs_.h"
 #include "shell42.h"
+#include <signal.h>
+#include <sys/types.h>
 
 void	process_cmds(
 			t_grps_wrds *cmd_queue,
@@ -9,16 +11,22 @@ void	process_cmds(
 {
 	t_grps_wrds	*pipe_queue;
 	t_lst_words	*words;
+	int			ret;
 
 	for (; cmd_queue; LTONEXT(cmd_queue))
 	{
 		words = LCONT(cmd_queue, t_lst_words*);
-		if (words_match_single(words, ";"))
+		if (words_match_single(words, "^;$"))
 			continue;
 
 		pipe_queue = group_words_by_delim(words, PIPE_DELIM);
-		process_pipe_queue(new_pipe_env(pipe_queue, built_in_cmds, shvars));
+		ret = process_pipe_queue(
+			new_pipe_env(pipe_queue, built_in_cmds, shvars));
 		del_groups_of_words(pipe_queue);
+		if (ret == -2)
+		{
+			break;
+		}
 	}
 }
 

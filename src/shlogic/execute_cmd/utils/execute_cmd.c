@@ -11,6 +11,7 @@ pid_t		execute_cmd(t_cmd_env *cmd_env, t_rostr cmd_path)
 
 	if (pid == CHILD_PROCESS_PID)
 	{
+		// ft_printf("{blue}started %s from %d/%d\n", cmd_path, getpid(), getppid());
 		dup_and_close(cmd_env->fd_io.in, STDIN_FILENO, TRUE);
 		dup_and_close(cmd_env->fd_io.out, STDOUT_FILENO, TRUE);
 		dup_and_close(cmd_env->fd_io.err, STDERR_FILENO, TRUE);

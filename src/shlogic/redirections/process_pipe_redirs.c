@@ -1,4 +1,5 @@
 #include "shell_redirs_.h"
+#include "shell42.h"
 
 /*
 ** If the next pipe is a |&, then stderr should redirectionate to stdout.

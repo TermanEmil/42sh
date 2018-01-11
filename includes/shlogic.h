@@ -132,7 +132,8 @@ t_str		get_tilde_value(t_rostr tilde_prefix, const t_shvars *shvars);
 
 t_bool		cmd_is_set_var(t_rostr str);
 t_bool		cmd_is_specific_program(t_rostr cmd);
-t_str		find_cmd_in_env_path(t_rostr cmd, const t_shvars *shvars);
+t_str		find_cmd_in_env_path(t_rostr cmd, const t_shvars *shvars,
+				t_bool is_regex_patern);
 t_exec_cmd_f *get_sh_builtin_f(t_rostr cmd, const t_hashtab *built_in);
 pid_t		execute_cmd(t_cmd_env *cmd_env, t_rostr cmd_path);
 void		execute_built_in(t_cmd_env *cmd_env, t_exec_cmd_f *cmd_f);

@@ -6,7 +6,7 @@
 ** screen.
 */
 
-static inline void	print_debug_information(t_list *keys)
+static inline void	print_debug_information_(t_list *keys)
 {
 	t_str	insideof_map;
 	t_str	input_txt;
@@ -21,7 +21,7 @@ static inline void	print_debug_information(t_list *keys)
 	free(insideof_map);
 }
 
-static inline void	set_parenthesis_prompt(t_str buf, char parenthesis)
+static inline void	set_parenthesis_prompt_(t_str buf, char parenthesis)
 {
 	buf[0] = 0;
 	if (parenthesis != '\\')
@@ -30,16 +30,15 @@ static inline void	set_parenthesis_prompt(t_str buf, char parenthesis)
 	ft_strcat(buf, ">");
 }
 
-static inline int	process_bracket_completion(int assign_what_are_insideof_ret)
+static inline int	process_cmd_completion_(int assign_what_are_insideof_ret)
 {
 	int		ret;
 
 	ret = assign_what_are_insideof_ret;
-
 	g_shinput->history.current_in_index = -1;
 	if (ret > 0)
 	{
-		set_parenthesis_prompt(g_shdata.prompt, ret);
+		set_parenthesis_prompt_(g_shdata.prompt, ret);
 		g_current_in->line_index++;
 	}
 	else if (ret == -1)
@@ -71,7 +70,7 @@ int		key_cmd_enter(void)
 	keys = current_in_all_lines_to_lst(g_current_in, &g_shinput->history);
 	ret = assign_what_are_insideof(keys);
 
-	if (process_bracket_completion(ret) == 0)
+	if (process_cmd_completion_(ret) == 0)
 		process_shell_input(keys, &g_shdata.shvars, g_shdata.built_in_cmds);
 	else
 		IF_TERM(ft_putnewl());

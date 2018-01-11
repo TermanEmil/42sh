@@ -24,7 +24,7 @@ typedef struct		s_redir_env
 ** Public.
 */
 
-void	process_pipe_queue(t_pipe_env pipe_env);
+int		process_pipe_queue(t_pipe_env pipe_env);
 pid_t	process_argv(t_pipe_env *pipe_env, t_cmd_env *cmd_env);
 
 /*

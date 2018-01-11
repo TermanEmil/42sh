@@ -45,7 +45,7 @@ static void		process_all_redirs_(
 	t_cmd_env	cmd_env;
 	t_str		*argv;
 
-	if (words_match_single(LCONT(queue_iter, t_lst_words*), PIPE_DELIM))
+	if (words_match_single(LCONT(queue_iter, t_lst_words*), "^" PIPE_DELIM "$"))
 		return;
 
 	argv = extract_argv_(LCONT(queue_iter, t_lst_words*));
@@ -59,21 +59,29 @@ static void		process_all_redirs_(
 ** Execute the arguments, closing the writing end of the pipe (important).
 */
 
-static void		execute_argvs_of_cmd_envs_(
+static int		execute_argvs_of_cmd_envs_(
 					t_pipe_env *pipe_env,
 					t_list *cmd_envs)
 {
 	t_cmd_env	*cmd_env;
+	int			ret;
 
 	for (; cmd_envs; LTONEXT(cmd_envs))
 	{
 		cmd_env = LCONT(cmd_envs, t_cmd_env*);
 		if (cmd_env->success)
-			process_argv(pipe_env, cmd_env);
+			ret = process_argv(pipe_env, cmd_env);
 
-		if (TMP_FAIL_RETRY(close(cmd_env->piped_fds[PIPE_WRITE_END])) != 0)
-			ft_err_erno(errno, TRUE);
+		if (cmd_env->piped_fds[PIPE_WRITE_END] >= 0)
+		{
+			if (TMP_FAIL_RETRY(close(cmd_env->piped_fds[PIPE_WRITE_END])) != 0)
+				ft_err_erno(errno, TRUE);
+			cmd_env->piped_fds[PIPE_WRITE_END] = -1;
+		}
+		if (ret == -2)
+			return ret;
 	}
+	return 0;
 }
 
 /*
@@ -101,19 +109,20 @@ static void		execute_argvs_of_cmd_envs_(
 ** }
 */
 
-void			process_pipe_queue(t_pipe_env pipe_env)
+int			process_pipe_queue(t_pipe_env pipe_env)
 {
 	const t_grps_wrds	*queue_iter;
 	int					*fd;
 	int					i;
 	t_list				*cmd_envs;
+	int					ret;
 
 	fd = new_fd_tab_for_piping(pipe_env.cmd_count * 2);
 
 	queue_iter = pipe_env.pipe_queue;
 	for (i = 0, cmd_envs = NULL; queue_iter; LTONEXT(queue_iter), i++)
 		process_all_redirs_(&pipe_env, queue_iter, fd + i * 2, &cmd_envs);
-	execute_argvs_of_cmd_envs_(&pipe_env, cmd_envs);
+	ret = execute_argvs_of_cmd_envs_(&pipe_env, cmd_envs);
 
 	ft_lstdel(&cmd_envs, (t_ldel_func*)&del_cmd_env);
 
@@ -123,4 +132,5 @@ void			process_pipe_queue(t_pipe_env pipe_env)
 	
 	ft_lstdel(&pipe_env.fds_to_close, &std_mem_del);
 	ft_memdel((void**)&fd);
+	return ret;
 }

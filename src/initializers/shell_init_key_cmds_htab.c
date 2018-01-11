@@ -39,5 +39,5 @@ void			shell_init_key_cmds_htab(void)
 	add_key_cmd_term_(htab, term_key_home, &key_cmd_home);
 	add_key_cmd_term_(htab, term_key_end, &key_cmd_end);
 	add_key_cmd_term_(htab, term_key_enter, &key_cmd_enter);
-	// add_key_cmd_term_(htab, term_key_enter, &key_cmd_enter);
+	add_key_cmd_term_(htab, term_key_tab, &key_cmd_tab);
 }

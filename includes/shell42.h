@@ -31,6 +31,12 @@ typedef struct s_shdata			t_shdata;
 
 extern t_shdata		g_shdata;
 
+typedef struct		s_sub_sh
+{
+	t_str			raw_cmd;
+	t_input_output	fd_io;
+}					t_sub_sh;
+
 struct				s_shdata
 {
 	char			prompt[36];
@@ -39,6 +45,7 @@ struct				s_shdata
 	t_hashtab		*built_in_cmds;
 	t_bool			running_a_process;
 	t_bool			is_term;
+	t_sub_sh		*sub_sh;
 };
 
 void				read_process_non_term_input();
