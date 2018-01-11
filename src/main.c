@@ -1,6 +1,5 @@
 #include "shell42.h"
 #include <fcntl.h>
-#include "ft_key_codes.h"
 #include <time.h>
 #include "shellvars.h"
 #include <regex.h>
@@ -14,6 +13,8 @@ int		main(int argc, const char **argv, const char **envp)
 {
 	init_shell(envp);
 
+	(void)argv;
+	(void)argc;
 	if (g_shdata.is_term)
 	{
 		ft_putstr("42sh shell by eterman");	

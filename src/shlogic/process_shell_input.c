@@ -36,7 +36,6 @@ void	process_shell_input(
 			const t_hashtab *built_in_cmds)
 {
 	t_lst_words	*words;
-	t_str		*argv;
 	t_grps_wrds	*cmd_queue;
 
 	words = extract_words_from_keys(keys);

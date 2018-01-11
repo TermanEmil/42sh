@@ -34,7 +34,6 @@ static int	open_redir_file_(const t_redir_env *redir_env)
 }
 
 static int	get_destination_fd_(
-				t_pipe_env *pipe_env,
 				t_cmd_env *cmd_env,
 				t_redir_env *redir_env)
 {
@@ -80,7 +79,7 @@ void		process_guillemet_redir_to_from_file(
 		return;
 	}
 
-	if ((dest_fd = get_destination_fd_(pipe_env, cmd_env, redir_env)) == -1)
+	if ((dest_fd = get_destination_fd_(cmd_env, redir_env)) == -1)
 		return;
 	
 	if (redir_env->left_fd >= 0)

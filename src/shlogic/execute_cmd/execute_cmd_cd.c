@@ -33,7 +33,6 @@ static int		cd_to_dir_(t_rostr dir, t_shvars *shvars)
 {
 	t_str		old_pwd;
 	t_str		new_pwd;
-	int			ret;
 
 	if ((old_pwd = getcwd(NULL, 0)) == NULL)
 	{

@@ -13,10 +13,8 @@ void		process_guillemet_redir(
 					t_lst_words *next_words)
 {
 	t_redir_env		redir_env;
-	t_str			next_word_str;
 
 	redir_env = new_redir_env(redir_str, next_words);
-	next_word_str = NULL;
 
 	if (regex_mini_match(REG_CLOSE_FD, redir_str))
 		process_guillemet_close_fd(cmd_env, &redir_env);

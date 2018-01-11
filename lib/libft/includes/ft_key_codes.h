@@ -79,11 +79,11 @@ static t_term_key			term_key_alt_up = {FT_KEY_ALT_UP};
 static t_term_key			term_key_alt_down = {FT_KEY_ALT_DOWN};
 static t_term_key			term_key_enter = {FT_KEY_NL, FT_KEY_CARRIAG_RET};
 
-static t_term_key			term_key_next_pag = {"kN", "\xe[5~"};
-static t_term_key			term_key_prev_pag = {"kP", "\xe[6~"};
+// static t_term_key			term_key_next_pag = {"kN", "\xe[5~"};
+// static t_term_key			term_key_prev_pag = {"kP", "\xe[6~"};
 static t_term_key			term_key_backspace = {"kb", FT_KEY_BACKSPACE};
 static t_term_key			term_key_tab = {"\t"};
-static t_term_key			term_key_del = {"kD", FT_KEY_DEL};
+// static t_term_key			term_key_del = {"kD", FT_KEY_DEL};
 static t_term_key			term_key_end = {"@7", FT_KEY_END1, FT_KEY_END2};
 static t_term_key			term_key_home =
 								{"kh", "kH", FT_KEY_HOME1, FT_KEY_HOME2};

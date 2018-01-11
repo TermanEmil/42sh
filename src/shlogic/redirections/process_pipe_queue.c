@@ -10,7 +10,6 @@ static t_str	*extract_argv_(const t_lst_words *words)
 	t_str	*argv;
 	t_str	tmp;
 	int		i;
-	t_bool	condition;
 
 	argv = (t_str*)malloc((ft_lstlen(words) + 1) * sizeof(t_str));
 	if (argv == NULL)

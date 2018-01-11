@@ -58,7 +58,6 @@ t_lst_str	*get_matches_from_path_(t_rostr path, t_rostr patern)
 {
 	DIR				*dir_path;
 	struct dirent	*dir_buf;
-	t_str			file_path;
 	t_lst_str		*matches;
 
 	matches = NULL;
@@ -67,7 +66,6 @@ t_lst_str	*get_matches_from_path_(t_rostr path, t_rostr patern)
 		errno = 0;
 		return NULL;
 	}
-	file_path = NULL;
 	while ((dir_buf = readdir(dir_path)) != NULL)
 	{
 		if (regex_mini_match(patern, dir_buf->d_name))

@@ -29,7 +29,7 @@
 #		the modified only).
 
 NAME		=	42sh
-FLAGS		=	-Wall -Wextra -Werror
+FLAGS		=	-Wall -Wextra -Werror -Wincompatible-pointer-types
 CC			=	gcc -g
 
 
@@ -54,8 +54,8 @@ INCLUDES	=	$(INC_PROJ) $(LIB_INCS)
 # Compile can include flags or other stuff, so it can be useful when I
 # want to compile without flags
 
-# COMPILE		=	$(CC) $(FLAGS) $(INCLUDES)
-COMPILE		=	$(CC) $(INCLUDES) -Wincompatible-pointer-types
+COMPILE		=	$(CC) $(FLAGS) $(INCLUDES)
+# COMPILE		=	$(CC) $(INCLUDES) 
 
 # Finds all '.c' files in 'src'
 
