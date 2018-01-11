@@ -41,3 +41,4 @@ int	ft_lst_insert_range(t_list **head, size_t const i, t_list * const elements)
 	}
 	return (ft_lst_insert_range(&LNEXT(*head), i - 1, elements));
 }
+

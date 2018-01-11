@@ -1,26 +1,6 @@
 #include "shell42.h"
 #include "shlogic.h"
 
-/*
-** Print the current input and each key's 'inside_of' value at the top of the
-** screen.
-*/
-
-static inline void	print_debug_information_(t_list *keys)
-{
-	t_str	insideof_map;
-	t_str	input_txt;
-
-	input_txt = current_input_all_lines_to_str(g_current_in, "");
-	insideof_map = get_keys_insideof_map(keys);
-
-	term_printf(0, 0, "input:       %s", input_txt);
-	term_printf(0, 1, "isideof_map: %s", insideof_map);
-
-	free(input_txt);
-	free(insideof_map);
-}
-
 static inline void	set_parenthesis_prompt_(t_str buf, char parenthesis)
 {
 	buf[0] = 0;
