@@ -4,6 +4,7 @@
 # include "listlib.h"
 # include "ft_errors.h"
 # include "hashtablib.h"
+# include <signal.h>
 
 # define SHELL_INPUT_DELIMS " \t_;\"'-()[]{}|`#<>"
 
@@ -122,13 +123,13 @@ struct				s_current_input
 ** Controlls the overall input.
 */
 
-struct				s_shinput
+struct						s_shinput
 {
-	t_current_input	current;
-	t_input_history	history;
-	t_hashtab		*key_cmds;
-	int				term_tty;
-	t_bool			signaled_sigint;
+	t_current_input			current;
+	t_input_history			history;
+	t_hashtab				*key_cmds;
+	int						term_tty;
+	volatile sig_atomic_t	signaled_sigint;
 };
 
 /*
