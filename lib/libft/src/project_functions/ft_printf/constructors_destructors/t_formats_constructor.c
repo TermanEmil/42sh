@@ -16,7 +16,7 @@ t_formats	*new_formats(void)
 {
 	t_formats		*result;
 
-	if ((result = (t_formats*)malloc(sizeof(t_formats))) == NULL)
+	if ((result = ft_memalloc(sizeof(t_formats))) == NULL)
 		return (NULL);
 	result->width = 0;
 	result->precision = 0;

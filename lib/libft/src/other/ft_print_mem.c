@@ -24,13 +24,13 @@ static void	print_hex_mem(unsigned char *c_ptr, size_t size, int base,
 	while (i < size)
 	{
 		if (base == 2)
-			ft_sprintf(&s, "%0.8b", c_ptr[i]);
+			ft_sprintf_mlc(&s, "%0.8b", c_ptr[i]);
 		else if (base == 8)
-			ft_sprintf(&s, "%0.3o", c_ptr[i]);
+			ft_sprintf_mlc(&s, "%0.3o", c_ptr[i]);
 		else if (base == 10)
-			ft_sprintf(&s, "%0.2d", c_ptr[i]);
+			ft_sprintf_mlc(&s, "%0.2d", c_ptr[i]);
 		else
-			ft_sprintf(&s, "%0.2x", c_ptr[i]);
+			ft_sprintf_mlc(&s, "%0.2x", c_ptr[i]);
 		ft_putstr(s);
 		chars_printed += ft_strlen(s);
 		i++;

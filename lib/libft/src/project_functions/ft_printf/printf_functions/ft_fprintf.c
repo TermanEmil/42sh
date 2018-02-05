@@ -15,7 +15,7 @@
 int				ft_fprintf(int fd, const char *format, ...)
 {
 	va_list		ap;
-	int			result;
+	int			result; 
 	t_data		*data;
 
 	data = sprintf_new_data();

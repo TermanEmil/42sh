@@ -20,6 +20,7 @@
 # include <limits.h>
 # include "short_named_types.h"
 # include "errno.h"
+# include <sys/types.h>
 
 /*
 ** The makefile is possible hidden (.Makefile)
@@ -118,7 +119,9 @@ typedef struct	s_str_pair
 int				get_next_line(int const fd, char **line);
 int				ft_printf(const char *format, ...);
 int				ft_fprintf(int fd, const char *format, ...);
-int				ft_sprintf(char **buff, const char *format, ...);
+int				ft_sprintf(char *buff, const char *format, ...);
+int				ft_sprintf_mlc(char **buff, const char *format, ...);
+int				sync_printf(pthread_mutex_t *mutex, int fd, t_rostr frmat, ...);
 
 /*
 **	Memory function
@@ -179,6 +182,7 @@ char			*ft_str_toupper(char *str);
 */
 
 void			ft_free_bidimens(char **table);
+t_str			*ft_bidimens_dup(const t_str *tab);
 char			*ft_strrealoc(char **str);
 int				ft_wstrlen(wchar_t *str);
 int				ft_indexof(char **table, char *str);
@@ -194,6 +198,8 @@ void			ft_strrm_n(char *str, size_t index, size_t n);
 int				ft_str_stack_cat(char *dest, char const *str, size_t dest_len);
 void			ft_strncpy_terminate(char *dest, char const *str, size_t len);
 t_str			ft_strnew_raw(size_t const len);
+t_bool			ft_str_starts_with(t_rostr haystack, t_rostr needle);
+void			ft_str_mlc_sub(t_str *str, t_rostr needle, int start, int end);
 
 /*
 ** utf8
@@ -230,6 +236,7 @@ int				ft_toupper (int c);
 int				ft_tolower (int c);
 int				ft_isupper(int c);
 int				ft_islower(int c);
+t_bool			ft_str_is_numb(t_rostr str);
 
 /*
 ** Print functions
@@ -250,6 +257,7 @@ void			ft_putnewl();
 */
 
 int				ft_atoi(const char *str);
+int				ft_atoi_base(t_rostr str, int base);
 char			*ft_itoa(int n);
 char			*ft_bufitoa(long long n, char *buf);
 void			print_n_times(char *str, int n, int fd);

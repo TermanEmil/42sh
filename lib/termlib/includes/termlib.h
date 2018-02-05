@@ -31,6 +31,7 @@ typedef struct termios	t_termios;
 typedef struct		s_term_data
 {
 	t_termios		old_term;
+	t_bool			is_raw;
 	char			term_buf[2048];
 	char			tmp_buf[2048];
 }					t_term_data;

@@ -22,6 +22,7 @@
 # include "extractlib.h"
 # include <inttypes.h>
 # include <limits.h>
+# include <sys/types.h>
 
 # define SPECIFIERS	"\x25sScCbBoOuUidDxXpnfF"
 # define NUM_SPEC	"bBoOuUidDxXpfF"
@@ -65,7 +66,9 @@ typedef struct	s_data
 
 int				ft_printf(const char *format, ...);
 int				ft_fprintf(int fd, const char *format, ...);
-int				ft_sprintf(char **buff, const char *format, ...);
+int				ft_sprintf(char *buff, const char *format, ...);
+int				ft_sprintf_mlc(char **buff, const char *format, ...);
+
 /*
 ** Constructor / destructor
 */

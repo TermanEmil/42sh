@@ -12,38 +12,12 @@
 
 #include "listlib.h"
 
-static void		rec_rm(
-					t_list **head,
-					t_list *target,
-					t_list *prev,
-					void (*del)(void*, size_t))
-{
-	t_list	*tmp;
-
-	if (*head == NULL)
-		return;
-	if (*head == target)
-	{
-		tmp = *head;
-		if (prev == NULL)
-		{
-			LTONEXT(*head);
-			LPREV(*head) = NULL;
-		}
-		else
-		{
-			if (LNEXT(*head))
-				LPREV(LNEXT(*head)) = prev;
-			prev->next = LNEXT(*head);
-		}
-		ft_lstdelone(&tmp, del);
-	}
-	else
-		rec_rm(&LNEXT(*head), target, *head, del);
-}
-
 void			ft_lstrm(t_list **head,
 					t_list *target, void (*del)(void*, size_t))
 {
-	rec_rm(head, target, NULL, del);
+	t_list	*element;
+
+	element = ft_lst_detach(head, target);
+	if (element)
+		ft_lstdelone(&element, del);
 }

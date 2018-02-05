@@ -1,0 +1,13 @@
+The project doesn't memory leak, but it's not written by all normes.
+I think some normes are ridiculos:
+	- no empty newline in a function.
+		This just help to keep the code cleaner.
+	
+	- no do-while or for loop.
+		Do I really need to add 4 extra lines to keep the code, "simplier"?
+		I think using these extra loops keeps the code more intuitive.
+
+I did my best to respect 5 functions in a file and no functions longer than 25 lines.
+I do have 2-3 defines on multiple lines.
+
+GITHUB link to my repo: https://github.com/TermanEmil/42sh

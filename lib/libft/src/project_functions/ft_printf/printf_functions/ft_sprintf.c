@@ -12,7 +12,7 @@
 
 #include "ft_printf.h"
 
-int				ft_sprintf(char **buff, const char *format, ...)
+int				ft_sprintf(char *buff, const char *format, ...)
 {
 	va_list		ap;
 	int			result;
@@ -23,7 +23,14 @@ int				ft_sprintf(char **buff, const char *format, ...)
 	process_format(format, &ap, data);
 	va_end(ap);
 	result = data->printed_chars - data->not_counted_chars;
-	*buff = data->str;
+	if (data->str)
+	{
+		ft_memcpy(buff, data->str, data->printed_chars);
+		buff[data->printed_chars + 1] = '\0';
+		free(data->str);
+	}
+	else
+		buff[0] = '\0';
 	free(data);
 	return (result);
 }

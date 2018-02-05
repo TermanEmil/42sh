@@ -7,4 +7,5 @@
 void		term_restore_to_old_term_data(void)
 {
 	term_restore(&term_get_data()->old_term);
+	term_get_data()->is_raw = FALSE;
 }

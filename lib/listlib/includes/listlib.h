@@ -70,9 +70,16 @@ void			ft_lst_push_front(t_list **first, t_list *new_el);
 t_list			*ft_lstget(const t_list *head, int index);
 t_list			*ft_lst_get_last(t_list *head);
 int				ft_lstlen(t_list const *head);
-int				ft_lst_indexof(const t_list *lst,
-					const void *target, size_t target_size,
-					t_lst_cont_cmp *cmp);
+int				ft_lst_indexof(const t_list *lst, const void *target,
+					size_t target_size, t_lst_cont_cmp *cmp);
+t_list			*ft_lst_first(const t_list *lst, const void *target,
+					size_t target_size, t_lst_cont_cmp *cmp);
+t_list			*ft_lst_filter(t_list *lst, const void *cmp_data,
+					size_t data_size, t_lst_cont_cmp *cmp);
+t_list			*ft_lst_max(const t_list *head, int (*cmp_get)(void*));
+void			*ft_lst_max_mem(const t_list *head, int (*cmp_get)(void*));
+t_list			*ft_lst_min(const t_list *head, int (*cmp_get)(void*));
+void			*ft_lst_min_mem(const t_list *head, int (*cmp_get)(void*));
 
 /*
 ** Copy
@@ -99,14 +106,20 @@ int				ft_lst_insert_range(t_list **head, size_t i, t_list *elements);
 
 void			ft_lstpop_front(t_list ** head, t_ldel_func * del);
 void			ft_lstpop_back(t_list ** head, t_ldel_func * del);
+t_list			*ft_lst_detach(t_list **head, t_list *target);
 void			ft_lstrm(t_list **h, t_list *trget, t_ldel_func *del);
 int				ft_lstrm_at(t_list **head, size_t index, t_ldel_func *del);
+t_bool			ft_lstrm_cmp(t_list **h, const void *cont, t_lst_cont_cmp *cmp,
+					t_ldel_func *del);
 
 /*
 ** Iterating functions
 */
 
 void			ft_lstiter(t_list *lst, void (*f)(t_list *elem));
+void			ft_lstiter_mem(t_list *lst, void (*f)(void *content));
+void			ft_lstiter_mem2(t_list *lst, void *data,
+					void (*f)(void *data, void *cont));
 void			ft_lst_rev_iter(t_list *lst, void (*f)(t_list *elem));
 t_list			*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 void			ft_lstiter_arg(t_list *lst, t_liter_arg *f, int argc, ...);

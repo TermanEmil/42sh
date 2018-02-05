@@ -15,7 +15,7 @@
 
 # include "libft.h"
 
-# define BUFF_SIZE 128
+# define BUFF_SIZE 124
 
 typedef struct			s_fd_stock
 {

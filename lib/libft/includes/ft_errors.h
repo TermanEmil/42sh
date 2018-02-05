@@ -26,6 +26,7 @@ void		ft_fatal(const char *format, ...);
 void		ft_err_mem(int exit_program);
 int			ft_proj_err(const char *msg, int exit_program);
 void		ft_error(int const exit_program, char const *format, ...);
+void		ft_prerror(int const exit_program, char const *format, ...);
 void		ft_err_erno(int errno_val, t_bool exit_program);
 
 #endif

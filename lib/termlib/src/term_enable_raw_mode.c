@@ -16,4 +16,5 @@ void		term_enable_raw_mode(t_term_data * const term_data)
 	term.c_cc[VMIN] = 1;
 	term.c_cc[VTIME] = 0;
 	term_set_current_term_data(&term);
+	term_data->is_raw = TRUE;
 }

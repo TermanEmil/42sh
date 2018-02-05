@@ -13,4 +13,5 @@ void	term_restore(t_termios const *old_term)
 	// term_echo_restore_write(&term, old_term);
 	term_set_current_term_data(old_term);
 	term_cursor_on();
+	term_get_data()->is_raw = FALSE;
 }

@@ -130,7 +130,7 @@ int			get_next_line(int const fd, char **line)
 		(buffer = ft_strnew(BUFF_SIZE)) == NULL)
 		return (-1);
 	stock = get_stock(&head, fd);
-	while ((ret = read(fd, buffer, BUFF_SIZE)) > 0)
+	while ((ret = TMP_FAIL_RETRY(read(fd, buffer, BUFF_SIZE))) > 0)
 	{
 		buffer[ret] = '\0';
 		if (ft_addstr(stock, buffer, ret))
